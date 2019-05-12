@@ -1,7 +1,6 @@
-import Link from "next/link";
-import * as React from "react";
-import Layout from "../components/Layout";
-import { withAuth } from "../components/withAuth";
+import Link from 'next/link';
+import * as React from 'react';
+import Layout from '../components/Layout';
 
 const AboutPage: React.FunctionComponent = () => (
     <Layout title="About | Next.js + TypeScript Example">
@@ -15,4 +14,4 @@ const AboutPage: React.FunctionComponent = () => (
     </Layout>
 );
 
-export default withAuth(AboutPage);
+export default AboutPage;

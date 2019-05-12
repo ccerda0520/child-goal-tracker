@@ -1,15 +1,15 @@
-import { Field, Formik } from "formik";
-import Router from "next/router";
-import React from "react";
-import * as Yup from "yup";
-import { LoginComponent } from "../generated/apolloComponents";
-import { InputField } from "./formikFields/InputField";
+import { Field, Formik } from 'formik';
+import Router from 'next/router';
+import React from 'react';
+import * as Yup from 'yup';
+import { LoginComponent } from '../generated/apolloComponents';
+import InputField from './formikFields/InputField';
 
-const LoginValidationSchema = Yup.object().shape({
+const loginValidationSchema = Yup.object().shape({
     email: Yup.string()
-        .email("Invalid Email")
-        .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+        .email('Invalid Email')
+        .required('Email is required'),
+    password: Yup.string().required('Password is required'),
 });
 
 const LoginForm: React.FunctionComponent<{}> = () => {
@@ -17,7 +17,7 @@ const LoginForm: React.FunctionComponent<{}> = () => {
         <LoginComponent>
             {(login) => (
                 <Formik
-                    validationSchema={LoginValidationSchema}
+                    validationSchema={loginValidationSchema}
                     onSubmit={async (values, { setSubmitting, setErrors }) => {
                         try {
                             const response = await login({
@@ -34,23 +34,23 @@ const LoginForm: React.FunctionComponent<{}> = () => {
                                 !response.data.login
                             ) {
                                 setErrors({
-                                    loginFailed: "Incorrect email or password",
+                                    loginFailed: 'Incorrect email or password',
                                 });
                                 setSubmitting(false);
                                 return;
                             }
 
                             // Redirect user after successful login
-                            Router.push("/");
+                            Router.push('/');
                         } catch (err) {
-                            console.log("err:", err);
+                            console.log('err:', err);
                             setSubmitting(false);
                         }
                     }}
                     initialValues={{
-                        email: "",
-                        password: "",
-                        loginFailed: "",
+                        email: '',
+                        password: '',
+                        loginFailed: '',
                     }}
                 >
                     {({ errors, isSubmitting, handleSubmit }) => (
@@ -74,9 +74,9 @@ const LoginForm: React.FunctionComponent<{}> = () => {
                             <button type="submit" disabled={isSubmitting}>
                                 Login
                             </button>
-                            {errors["loginFailed"] && (
+                            {errors['loginFailed'] && (
                                 <div className="error">
-                                    {errors["loginFailed"]}
+                                    {errors['loginFailed']}
                                 </div>
                             )}
                         </form>

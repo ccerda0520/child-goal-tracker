@@ -100,6 +100,15 @@ export type User = {
   roles: Array<Scalars["String"]>;
   students?: Maybe<Array<Student>>;
 };
+export type ConfirmUserMutationVariables = {
+  token: Scalars["String"];
+};
+
+export type ConfirmUserMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "confirmUser"
+>;
+
 export type LoginMutationVariables = {
   email: Scalars["String"];
   password: Scalars["String"];
@@ -109,10 +118,21 @@ export type LoginMutation = { __typename?: "Mutation" } & {
   login: Maybe<{ __typename?: "User" } & Pick<User, "id" | "email">>;
 };
 
+export type RegisterMutationVariables = {
+  data: RegisterInput;
+};
+
+export type RegisterMutation = { __typename?: "Mutation" } & {
+  register: { __typename?: "User" } & Pick<
+    User,
+    "id" | "firstName" | "lastName" | "email"
+  >;
+};
+
 export type MeQueryVariables = {};
 
 export type MeQuery = { __typename?: "Query" } & {
-  me: Maybe<{ __typename?: "User" } & Pick<User, "id" | "email">>;
+  me: Maybe<{ __typename?: "User" } & Pick<User, "email" | "id">>;
 };
 
 import gql from "graphql-tag";
@@ -120,6 +140,56 @@ import * as React from "react";
 import * as ReactApollo from "react-apollo";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export const ConfirmUserDocument = gql`
+  mutation ConfirmUser($token: String!) {
+    confirmUser(token: $token)
+  }
+`;
+export type ConfirmUserMutationFn = ReactApollo.MutationFn<
+  ConfirmUserMutation,
+  ConfirmUserMutationVariables
+>;
+
+export const ConfirmUserComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        ConfirmUserMutation,
+        ConfirmUserMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: ConfirmUserMutationVariables }
+) => (
+  <ReactApollo.Mutation<ConfirmUserMutation, ConfirmUserMutationVariables>
+    mutation={ConfirmUserDocument}
+    {...props}
+  />
+);
+
+export type ConfirmUserProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<ConfirmUserMutation, ConfirmUserMutationVariables>
+> &
+  TChildProps;
+export function withConfirmUser<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    ConfirmUserMutation,
+    ConfirmUserMutationVariables,
+    ConfirmUserProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    ConfirmUserMutation,
+    ConfirmUserMutationVariables,
+    ConfirmUserProps<TChildProps>
+  >(ConfirmUserDocument, {
+    alias: "withConfirmUser",
+    ...operationOptions
+  });
+}
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -170,11 +240,63 @@ export function withLogin<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+export const RegisterDocument = gql`
+  mutation Register($data: RegisterInput!) {
+    register(data: $data) {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+export type RegisterMutationFn = ReactApollo.MutationFn<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
+
+export const RegisterComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<RegisterMutation, RegisterMutationVariables>,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: RegisterMutationVariables }
+) => (
+  <ReactApollo.Mutation<RegisterMutation, RegisterMutationVariables>
+    mutation={RegisterDocument}
+    {...props}
+  />
+);
+
+export type RegisterProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<RegisterMutation, RegisterMutationVariables>
+> &
+  TChildProps;
+export function withRegister<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    RegisterMutation,
+    RegisterMutationVariables,
+    RegisterProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    RegisterMutation,
+    RegisterMutationVariables,
+    RegisterProps<TChildProps>
+  >(RegisterDocument, {
+    alias: "withRegister",
+    ...operationOptions
+  });
+}
 export const MeDocument = gql`
   query Me {
     me {
-      id
       email
+      id
     }
   }
 `;

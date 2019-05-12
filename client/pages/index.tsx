@@ -1,7 +1,7 @@
-import Link from "next/link";
-import * as React from "react";
-import Layout from "../components/Layout";
-import { LoginComponent } from "../generated/apolloComponents";
+import Link from 'next/link';
+import * as React from 'react';
+import Layout from '../components/Layout';
+import { LoginComponent } from '../generated/apolloComponents';
 
 const IndexPage: React.FunctionComponent = () => {
     return (
@@ -18,8 +18,8 @@ const IndexPage: React.FunctionComponent = () => {
                         onClick={async () => {
                             const response = await mutate({
                                 variables: {
-                                    email: "test@test.com",
-                                    password: "asdfsfd",
+                                    email: 'test@test.com',
+                                    password: 'asdfsfd',
                                 },
                             });
 
