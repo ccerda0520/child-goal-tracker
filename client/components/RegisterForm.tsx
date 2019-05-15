@@ -1,17 +1,35 @@
 import { Field, Formik } from 'formik';
 import React from 'React';
+import styled from 'styled-components';
 import * as Yup from 'yup';
 import { RegisterComponent } from '../generated/apolloComponents';
 import InputField from './formikFields/InputField';
+import { Button } from './presentational/CommonStyles';
+
 const registerFormValidationSchema = Yup.object().shape({
     registerFirstName: Yup.string().required('First Name is required'),
     registerLastName: Yup.string().required('Last Name is required'),
     registerEmail: Yup.string()
         .email('Email must be a valid email')
         .required('Email is required'),
-    registerPassword: Yup.string().required('Password is required'),
+    registerPassword: Yup.string()
+        .required('Password is required')
+        .length(5, 'Password must be at least 5 characters'),
 });
-export const RegisterForm: React.FunctionComponent<{}> = () => {
+const Form = styled('form')`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 25px;
+    margin-bottom: 25px;
+`;
+
+const RegisterButton = styled(Button)`
+    width: 100%;
+`;
+
+const RegisterForm: React.FunctionComponent<{}> = () => {
     return (
         <RegisterComponent>
             {(register) => (
@@ -32,11 +50,7 @@ export const RegisterForm: React.FunctionComponent<{}> = () => {
                             setSubmitting(false);
                             console.log(response);
                         } catch (err) {
-                            console.log(
-                                'err: ',
-                                err.graphQLErrors[0].extensions.exception
-                                    .validationErrors,
-                            );
+                            console.log('err: ', err.graphQLErrors[0].extensions.exception.validationErrors);
                             setSubmitting(false);
                         }
                     }}
@@ -48,11 +62,11 @@ export const RegisterForm: React.FunctionComponent<{}> = () => {
                     }}
                 >
                     {({ errors, isSubmitting, handleSubmit }) => (
-                        <form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit}>
                             <Field
                                 name="registerFirstName"
                                 type="text"
-                                placeholder="first name"
+                                placeholder="First Name"
                                 label="First Name"
                                 isLabelVisible={false}
                                 component={InputField}
@@ -60,34 +74,28 @@ export const RegisterForm: React.FunctionComponent<{}> = () => {
                             <Field
                                 name="registerLastName"
                                 type="text"
-                                placeholder="last name"
+                                placeholder="Last Name"
                                 label="Last Name"
                                 isLabelVisible={false}
                                 component={InputField}
                             />
-                            <Field
-                                name="registerEmail"
-                                type="email"
-                                placeholder="email"
-                                label="Email"
-                                isLabelVisible={false}
-                                component={InputField}
-                            />
+                            <Field name="registerEmail" type="email" placeholder="Email" label="Email" isLabelVisible={false} component={InputField} />
                             <Field
                                 name="registerPassword"
                                 type="password"
-                                placeholder="password"
+                                placeholder="Password"
                                 label="Password"
                                 isLabelVisible={false}
                                 component={InputField}
                             />
-                            <button type="submit" disabled={isSubmitting}>
+                            <RegisterButton type="submit" disabled={isSubmitting}>
                                 Register
-                            </button>
-                        </form>
+                            </RegisterButton>
+                        </Form>
                     )}
                 </Formik>
             )}
         </RegisterComponent>
     );
 };
+export default RegisterForm;
