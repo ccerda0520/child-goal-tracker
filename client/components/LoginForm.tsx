@@ -3,7 +3,8 @@ import Router from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 import * as Yup from 'yup';
-import { LoginComponent } from '../generated/apolloComponents';
+import { LoginComponent, MeQuery } from '../generated/apolloComponents';
+import { meQuery } from '../graphql/user/query/me';
 import InputField from './formikFields/InputField';
 import { Button, Error } from './presentational/CommonStyles';
 
@@ -51,6 +52,19 @@ const LoginForm: React.FunctionComponent<{}> = () => {
                                     variables: {
                                         email: values.email,
                                         password: values.password,
+                                    },
+                                    update: (cache, { data }) => {
+                                        if (!data || !data.login) {
+                                            return;
+                                        }
+
+                                        cache.writeQuery<MeQuery>({
+                                            query: meQuery,
+                                            data: {
+                                                __typename: 'Query',
+                                                me: data.login,
+                                            },
+                                        });
                                     },
                                 });
 

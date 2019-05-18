@@ -10,7 +10,7 @@ export default createGlobalStyle`
 body {
     margin: 0;
     padding: 0;
-    background: #f5f5f5;
+    background: #efefef;
     font-family: "Lato", sans-serif;
     font-weight: 400;
     font-size: 15px;

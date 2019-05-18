@@ -1,18 +1,18 @@
-import {buildSchema} from "type-graphql";
-import {RegisterResolver} from "../modules/user/register";
-import {MeResolver} from "../modules/user/me";
-import {LogoutResolver} from "../modules/user/logout";
-import {LoginResolver} from "../modules/user/login";
-import {ForgotPasswordResolver} from "../modules/user/forgotPassword";
-import {ConfirmUserResolver} from "../modules/user/confirmUser";
-import {ChangePasswordInput} from "../modules/user/changePassword/changePasswordInput";
-import {CreateStudentResolver} from "../modules/student/createStudent";
+import { buildSchema } from 'type-graphql';
+import { CreateStudentResolver } from '../modules/student/createStudent';
+import { ChangePasswordResolver } from '../modules/user/changePassword';
+import { ConfirmUserResolver } from '../modules/user/confirmUser';
+import { ForgotPasswordResolver } from '../modules/user/forgotPassword';
+import { LoginResolver } from '../modules/user/login';
+import { LogoutResolver } from '../modules/user/logout';
+import { MeResolver } from '../modules/user/me';
+import { RegisterResolver } from '../modules/user/register';
 
 export const createSchema = async () => {
     return await buildSchema({
         resolvers: [
             // User Resolvers
-            ChangePasswordInput,
+            ChangePasswordResolver,
             ConfirmUserResolver,
             ForgotPasswordResolver,
             LoginResolver,
@@ -20,7 +20,7 @@ export const createSchema = async () => {
             MeResolver,
             RegisterResolver,
             //Student Resolvers
-            CreateStudentResolver
+            CreateStudentResolver,
         ],
-    })
+    });
 };

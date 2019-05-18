@@ -31,16 +31,29 @@ export type Goal = {
 };
 
 export type Mutation = {
-  register: User;
-  logout: Scalars["Boolean"];
-  login?: Maybe<User>;
-  forgotPassword?: Maybe<Scalars["Boolean"]>;
-  confirmUser?: Maybe<Scalars["Boolean"]>;
   createStudent: Student;
+  changePassword?: Maybe<User>;
+  confirmUser?: Maybe<Scalars["Boolean"]>;
+  forgotPassword?: Maybe<Scalars["Boolean"]>;
+  login?: Maybe<User>;
+  logout: Scalars["Boolean"];
+  register: User;
 };
 
-export type MutationRegisterArgs = {
-  data: RegisterInput;
+export type MutationCreateStudentArgs = {
+  data: CreateStudentInput;
+};
+
+export type MutationChangePasswordArgs = {
+  data: ChangePasswordInput;
+};
+
+export type MutationConfirmUserArgs = {
+  token: Scalars["String"];
+};
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars["String"];
 };
 
 export type MutationLoginArgs = {
@@ -48,16 +61,8 @@ export type MutationLoginArgs = {
   email: Scalars["String"];
 };
 
-export type MutationForgotPasswordArgs = {
-  email: Scalars["String"];
-};
-
-export type MutationConfirmUserArgs = {
-  token: Scalars["String"];
-};
-
-export type MutationCreateStudentArgs = {
-  data: CreateStudentInput;
+export type MutationRegisterArgs = {
+  data: RegisterInput;
 };
 
 export type PasswordInput = {
@@ -65,8 +70,8 @@ export type PasswordInput = {
 };
 
 export type Query = {
-  hello: Scalars["String"];
   me?: Maybe<User>;
+  hello: Scalars["String"];
 };
 
 export type RegisterInput = {
@@ -109,6 +114,15 @@ export type ConfirmUserMutation = { __typename?: "Mutation" } & Pick<
   "confirmUser"
 >;
 
+export type ForgotPasswordMutationVariables = {
+  email: Scalars["String"];
+};
+
+export type ForgotPasswordMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "forgotPassword"
+>;
+
 export type LoginMutationVariables = {
   email: Scalars["String"];
   password: Scalars["String"];
@@ -117,6 +131,13 @@ export type LoginMutationVariables = {
 export type LoginMutation = { __typename?: "Mutation" } & {
   login: Maybe<{ __typename?: "User" } & Pick<User, "id" | "email">>;
 };
+
+export type LogoutMutationVariables = {};
+
+export type LogoutMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "logout"
+>;
 
 export type RegisterMutationVariables = {
   data: RegisterInput;
@@ -190,6 +211,59 @@ export function withConfirmUser<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+export const ForgotPasswordDocument = gql`
+  mutation ForgotPassword($email: String!) {
+    forgotPassword(email: $email)
+  }
+`;
+export type ForgotPasswordMutationFn = ReactApollo.MutationFn<
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables
+>;
+
+export const ForgotPasswordComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        ForgotPasswordMutation,
+        ForgotPasswordMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: ForgotPasswordMutationVariables }
+) => (
+  <ReactApollo.Mutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>
+    mutation={ForgotPasswordDocument}
+    {...props}
+  />
+);
+
+export type ForgotPasswordProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables
+  >
+> &
+  TChildProps;
+export function withForgotPassword<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables,
+    ForgotPasswordProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables,
+    ForgotPasswordProps<TChildProps>
+  >(ForgotPasswordDocument, {
+    alias: "withForgotPassword",
+    ...operationOptions
+  });
+}
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -237,6 +311,53 @@ export function withLogin<TProps, TChildProps = {}>(
     LoginProps<TChildProps>
   >(LoginDocument, {
     alias: "withLogin",
+    ...operationOptions
+  });
+}
+export const LogoutDocument = gql`
+  mutation Logout {
+    logout
+  }
+`;
+export type LogoutMutationFn = ReactApollo.MutationFn<
+  LogoutMutation,
+  LogoutMutationVariables
+>;
+
+export const LogoutComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<LogoutMutation, LogoutMutationVariables>,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: LogoutMutationVariables }
+) => (
+  <ReactApollo.Mutation<LogoutMutation, LogoutMutationVariables>
+    mutation={LogoutDocument}
+    {...props}
+  />
+);
+
+export type LogoutProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<LogoutMutation, LogoutMutationVariables>
+> &
+  TChildProps;
+export function withLogout<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps>
+  >(LogoutDocument, {
+    alias: "withLogout",
     ...operationOptions
   });
 }

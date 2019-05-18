@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import * as Yup from 'yup';
 import { RegisterComponent } from '../generated/apolloComponents';
 import InputField from './formikFields/InputField';
-import { Button } from './presentational/CommonStyles';
+import { Button, Error } from './presentational/CommonStyles';
 
 const registerFormValidationSchema = Yup.object().shape({
     registerFirstName: Yup.string().required('First Name is required'),
@@ -14,7 +14,7 @@ const registerFormValidationSchema = Yup.object().shape({
         .required('Email is required'),
     registerPassword: Yup.string()
         .required('Password is required')
-        .length(5, 'Password must be at least 5 characters'),
+        .min(5, 'Password must be at least 5 characters'),
 });
 const Form = styled('form')`
     display: flex;
@@ -50,7 +50,16 @@ const RegisterForm: React.FunctionComponent<{}> = () => {
                             setSubmitting(false);
                             console.log(response);
                         } catch (err) {
-                            console.log('err: ', err.graphQLErrors[0].extensions.exception.validationErrors);
+                            let registerErrors: string = '';
+                            err.graphQLErrors[0].extensions.exception.validationErrors.forEach((e: any) => {
+                                const constraints: string[] = e!.constraints ? Object.keys(e!.constraints).map((k) => e!.constraints[k]) : [];
+                                constraints.forEach((e: any) => {
+                                    registerErrors = registerErrors + e;
+                                });
+                            });
+                            setErrors({
+                                registerFailed: registerErrors,
+                            });
                             setSubmitting(false);
                         }
                     }}
@@ -59,6 +68,7 @@ const RegisterForm: React.FunctionComponent<{}> = () => {
                         registerLastName: '',
                         registerEmail: '',
                         registerPassword: '',
+                        registerFailed: '',
                     }}
                 >
                     {({ errors, isSubmitting, handleSubmit }) => (
@@ -91,6 +101,7 @@ const RegisterForm: React.FunctionComponent<{}> = () => {
                             <RegisterButton type="submit" disabled={isSubmitting}>
                                 Register
                             </RegisterButton>
+                            {errors['registerFailed'] && <Error>{errors['registerFailed']}</Error>}
                         </Form>
                     )}
                 </Formik>
