@@ -13,9 +13,22 @@ export type ChangePasswordInput = {
   token: Scalars["String"];
 };
 
+export type CreateGoalInput = {
+  name: Scalars["String"];
+  description: Scalars["String"];
+  trialsPerDay: Scalars["Float"];
+  category: Scalars["String"];
+  studentId: Scalars["Float"];
+};
+
 export type CreateStudentInput = {
   firstName: Scalars["String"];
   lastName: Scalars["String"];
+};
+
+export type CreateTrialInput = {
+  success: Scalars["Boolean"];
+  goalId: Scalars["Float"];
 };
 
 export type Goal = {
@@ -23,6 +36,7 @@ export type Goal = {
   name: Scalars["String"];
   description: Scalars["String"];
   trialsPerDay: Scalars["Float"];
+  category: Scalars["String"];
   active: Scalars["Boolean"];
   completed: Scalars["Boolean"];
   studentId: Scalars["Float"];
@@ -31,7 +45,9 @@ export type Goal = {
 };
 
 export type Mutation = {
+  createGoal: Goal;
   createStudent: Student;
+  createTrial: Trial;
   changePassword?: Maybe<User>;
   confirmUser?: Maybe<Scalars["Boolean"]>;
   forgotPassword?: Maybe<Scalars["Boolean"]>;
@@ -40,8 +56,16 @@ export type Mutation = {
   register: User;
 };
 
+export type MutationCreateGoalArgs = {
+  data: CreateGoalInput;
+};
+
 export type MutationCreateStudentArgs = {
   data: CreateStudentInput;
+};
+
+export type MutationCreateTrialArgs = {
+  data: CreateTrialInput;
 };
 
 export type MutationChangePasswordArgs = {
@@ -70,8 +94,12 @@ export type PasswordInput = {
 };
 
 export type Query = {
+  goals?: Maybe<Array<Goal>>;
   me?: Maybe<User>;
-  hello: Scalars["String"];
+};
+
+export type QueryGoalsArgs = {
+  studentId: Scalars["Float"];
 };
 
 export type RegisterInput = {
@@ -105,6 +133,21 @@ export type User = {
   roles: Array<Scalars["String"]>;
   students?: Maybe<Array<Student>>;
 };
+export type GoalsQueryVariables = {
+  studentId: Scalars["Float"];
+};
+
+export type GoalsQuery = { __typename?: "Query" } & {
+  goals: Maybe<
+    Array<
+      { __typename?: "Goal" } & Pick<
+        Goal,
+        "id" | "name" | "description" | "category"
+      >
+    >
+  >;
+};
+
 export type ConfirmUserMutationVariables = {
   token: Scalars["String"];
 };
@@ -113,6 +156,17 @@ export type ConfirmUserMutation = { __typename?: "Mutation" } & Pick<
   Mutation,
   "confirmUser"
 >;
+
+export type CreateStudentMutationVariables = {
+  data: CreateStudentInput;
+};
+
+export type CreateStudentMutation = { __typename?: "Mutation" } & {
+  createStudent: { __typename?: "Student" } & Pick<
+    Student,
+    "firstName" | "lastName" | "id"
+  >;
+};
 
 export type ForgotPasswordMutationVariables = {
   email: Scalars["String"];
@@ -156,11 +210,83 @@ export type MeQuery = { __typename?: "Query" } & {
   me: Maybe<{ __typename?: "User" } & Pick<User, "email" | "id">>;
 };
 
+export type MeStudentsQueryVariables = {};
+
+export type MeStudentsQuery = { __typename?: "Query" } & {
+  me: Maybe<
+    { __typename?: "User" } & Pick<User, "email" | "id"> & {
+        students: Maybe<
+          Array<
+            { __typename?: "Student" } & Pick<
+              Student,
+              "firstName" | "lastName" | "id"
+            >
+          >
+        >;
+      }
+  >;
+};
+
 import gql from "graphql-tag";
 import * as React from "react";
 import * as ReactApollo from "react-apollo";
+import * as ReactApolloHooks from "react-apollo-hooks";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export const GoalsDocument = gql`
+  query Goals($studentId: Float!) {
+    goals(studentId: $studentId) {
+      id
+      name
+      description
+      category
+    }
+  }
+`;
+
+export const GoalsComponent = (
+  props: Omit<
+    Omit<ReactApollo.QueryProps<GoalsQuery, GoalsQueryVariables>, "query">,
+    "variables"
+  > & { variables: GoalsQueryVariables }
+) => (
+  <ReactApollo.Query<GoalsQuery, GoalsQueryVariables>
+    query={GoalsDocument}
+    {...props}
+  />
+);
+
+export type GoalsProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<GoalsQuery, GoalsQueryVariables>
+> &
+  TChildProps;
+export function withGoals<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    GoalsQuery,
+    GoalsQueryVariables,
+    GoalsProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    GoalsQuery,
+    GoalsQueryVariables,
+    GoalsProps<TChildProps>
+  >(GoalsDocument, {
+    alias: "withGoals",
+    ...operationOptions
+  });
+}
+
+export function useGoalsQuery(
+  baseOptions?: ReactApolloHooks.QueryHookOptions<GoalsQueryVariables>
+) {
+  return ReactApolloHooks.useQuery<GoalsQuery, GoalsQueryVariables>(
+    GoalsDocument,
+    baseOptions
+  );
+}
 export const ConfirmUserDocument = gql`
   mutation ConfirmUser($token: String!) {
     confirmUser(token: $token)
@@ -210,6 +336,84 @@ export function withConfirmUser<TProps, TChildProps = {}>(
     alias: "withConfirmUser",
     ...operationOptions
   });
+}
+
+export function useConfirmUserMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    ConfirmUserMutation,
+    ConfirmUserMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    ConfirmUserMutation,
+    ConfirmUserMutationVariables
+  >(ConfirmUserDocument, baseOptions);
+}
+export const CreateStudentDocument = gql`
+  mutation CreateStudent($data: CreateStudentInput!) {
+    createStudent(data: $data) {
+      firstName
+      lastName
+      id
+    }
+  }
+`;
+export type CreateStudentMutationFn = ReactApollo.MutationFn<
+  CreateStudentMutation,
+  CreateStudentMutationVariables
+>;
+
+export const CreateStudentComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        CreateStudentMutation,
+        CreateStudentMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: CreateStudentMutationVariables }
+) => (
+  <ReactApollo.Mutation<CreateStudentMutation, CreateStudentMutationVariables>
+    mutation={CreateStudentDocument}
+    {...props}
+  />
+);
+
+export type CreateStudentProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<CreateStudentMutation, CreateStudentMutationVariables>
+> &
+  TChildProps;
+export function withCreateStudent<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    CreateStudentMutation,
+    CreateStudentMutationVariables,
+    CreateStudentProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    CreateStudentMutation,
+    CreateStudentMutationVariables,
+    CreateStudentProps<TChildProps>
+  >(CreateStudentDocument, {
+    alias: "withCreateStudent",
+    ...operationOptions
+  });
+}
+
+export function useCreateStudentMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    CreateStudentMutation,
+    CreateStudentMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    CreateStudentMutation,
+    CreateStudentMutationVariables
+  >(CreateStudentDocument, baseOptions);
 }
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
@@ -264,6 +468,18 @@ export function withForgotPassword<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+
+export function useForgotPasswordMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables
+  >(ForgotPasswordDocument, baseOptions);
+}
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -314,6 +530,18 @@ export function withLogin<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+
+export function useLoginMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    LoginMutation,
+    LoginMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<LoginMutation, LoginMutationVariables>(
+    LoginDocument,
+    baseOptions
+  );
+}
 export const LogoutDocument = gql`
   mutation Logout {
     logout
@@ -360,6 +588,18 @@ export function withLogout<TProps, TChildProps = {}>(
     alias: "withLogout",
     ...operationOptions
   });
+}
+
+export function useLogoutMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    LogoutMutation,
+    LogoutMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<LogoutMutation, LogoutMutationVariables>(
+    LogoutDocument,
+    baseOptions
+  );
 }
 export const RegisterDocument = gql`
   mutation Register($data: RegisterInput!) {
@@ -413,6 +653,18 @@ export function withRegister<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+
+export function useRegisterMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    RegisterMutation,
+    RegisterMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    RegisterMutation,
+    RegisterMutationVariables
+  >(RegisterDocument, baseOptions);
+}
 export const MeDocument = gql`
   query Me {
     me {
@@ -452,4 +704,73 @@ export function withMe<TProps, TChildProps = {}>(
     alias: "withMe",
     ...operationOptions
   });
+}
+
+export function useMeQuery(
+  baseOptions?: ReactApolloHooks.QueryHookOptions<MeQueryVariables>
+) {
+  return ReactApolloHooks.useQuery<MeQuery, MeQueryVariables>(
+    MeDocument,
+    baseOptions
+  );
+}
+export const MeStudentsDocument = gql`
+  query MeStudents {
+    me {
+      email
+      id
+      students {
+        firstName
+        lastName
+        id
+      }
+    }
+  }
+`;
+
+export const MeStudentsComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.QueryProps<MeStudentsQuery, MeStudentsQueryVariables>,
+      "query"
+    >,
+    "variables"
+  > & { variables?: MeStudentsQueryVariables }
+) => (
+  <ReactApollo.Query<MeStudentsQuery, MeStudentsQueryVariables>
+    query={MeStudentsDocument}
+    {...props}
+  />
+);
+
+export type MeStudentsProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<MeStudentsQuery, MeStudentsQueryVariables>
+> &
+  TChildProps;
+export function withMeStudents<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    MeStudentsQuery,
+    MeStudentsQueryVariables,
+    MeStudentsProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    MeStudentsQuery,
+    MeStudentsQueryVariables,
+    MeStudentsProps<TChildProps>
+  >(MeStudentsDocument, {
+    alias: "withMeStudents",
+    ...operationOptions
+  });
+}
+
+export function useMeStudentsQuery(
+  baseOptions?: ReactApolloHooks.QueryHookOptions<MeStudentsQueryVariables>
+) {
+  return ReactApolloHooks.useQuery<MeStudentsQuery, MeStudentsQueryVariables>(
+    MeStudentsDocument,
+    baseOptions
+  );
 }

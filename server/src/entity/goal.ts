@@ -1,7 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, OneToMany} from "typeorm";
-import {Student} from "./student";
-import {Trial} from "./trial";
-import {Field, ID, ObjectType} from "type-graphql";
+import { Field, ID, ObjectType } from 'type-graphql';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Student } from './student';
+import { Trial } from './trial';
 
 @ObjectType()
 @Entity()
@@ -11,11 +11,11 @@ export class Goal extends BaseEntity {
     id: number;
 
     @Field()
-    @Column({type: "text"})
+    @Column({ type: 'text' })
     name: string;
 
     @Field()
-    @Column({type: "text"})
+    @Column({ type: 'text' })
     description: string;
 
     @Field(() => Number)
@@ -23,11 +23,15 @@ export class Goal extends BaseEntity {
     trialsPerDay: number;
 
     @Field()
-    @Column({default: true})
+    @Column({ type: 'text' })
+    category: string;
+
+    @Field()
+    @Column({ default: true })
     active: boolean;
 
     @Field()
-    @Column({nullable: true})
+    @Column({ nullable: true })
     completed: boolean;
 
     @Field(() => Number)
@@ -35,10 +39,10 @@ export class Goal extends BaseEntity {
     studentId: number;
 
     @Field(() => Student)
-    @ManyToOne(() => Student, student => student.goals)
+    @ManyToOne(() => Student, (student) => student.goals)
     student: Student;
 
     @Field(() => [Trial])
-    @OneToMany(() => Trial, trial => trial.goal)
+    @OneToMany(() => Trial, (trial) => trial.goal)
     trials: Trial[];
 }

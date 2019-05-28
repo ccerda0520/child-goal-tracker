@@ -1,32 +1,24 @@
-import {Arg, Mutation, Query, Resolver} from "type-graphql";
-import bcrypt from "bcryptjs";
-import {User} from "../../entity/User";
-import {RegisterInput} from "./register/registerInput";
-import {sendEmail} from "../utls/sendEmail";
-import {createConfirmationUrl} from "../utls/createConfirmationUrl";
+import bcrypt from 'bcryptjs';
+import { Arg, Mutation, Resolver } from 'type-graphql';
+import { User } from '../../entity/User';
+import { createConfirmationUrl } from '../utls/createConfirmationUrl';
+import { sendEmail } from '../utls/sendEmail';
+import { RegisterInput } from './register/registerInput';
 
 @Resolver(User)
 export class RegisterResolver {
-    @Query(returns => String)
-    async hello() {
-        return "Hello World";
-    }
-
     @Mutation(() => User)
-    async register(
-        @Arg('data') {email, firstName, lastName, password}: RegisterInput
-    ): Promise<User> {
+    async register(@Arg('data') { email, firstName, lastName, password }: RegisterInput): Promise<User> {
         const hashedPassword = await bcrypt.hash(password, 12);
         const user = await User.create({
             email,
             firstName,
             lastName,
-            password: hashedPassword
+            password: hashedPassword,
         }).save();
 
         await sendEmail(email, await createConfirmationUrl(user.id));
 
         return user;
     }
-
 }

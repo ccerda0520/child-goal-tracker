@@ -1,37 +1,15 @@
-import Link from 'next/link';
 import * as React from 'react';
 import Layout from '../components/Layout';
-import { LoginComponent } from '../generated/apolloComponents';
+import Students from '../components/Students';
+import { withAuth } from '../components/withAuth';
 
 const IndexPage: React.FunctionComponent = () => {
     return (
-        <Layout title="Home | Next.js + TypeScript Example">
-            <h1>Hello Next.js 👋</h1>
-            <p>
-                <Link href="/about">
-                    <a>About</a>
-                </Link>
-            </p>
-            <LoginComponent>
-                {(mutate) => (
-                    <button
-                        onClick={async () => {
-                            const response = await mutate({
-                                variables: {
-                                    email: 'test@test.com',
-                                    password: 'asdfsfd',
-                                },
-                            });
-
-                            console.log(response);
-                        }}
-                    >
-                        call login
-                    </button>
-                )}
-            </LoginComponent>
+        <Layout title="Home Dashboard">
+            <h1>Students</h1>
+            <Students />
         </Layout>
     );
 };
 
-export default IndexPage;
+export default withAuth(IndexPage);

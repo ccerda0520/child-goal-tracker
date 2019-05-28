@@ -36,13 +36,18 @@ const SideBarWrapper = styled('div')`
     position: fixed;
     top: 70px;
     left: 0;
-    width: 150px;
+    width: 75px;
     padding: 15px;
     height: 100%;
     background: white;
+    box-shadow: 0 1px 3px 0 rgba(31, 36, 38, 0.1);
 `;
 const MainWrapper = styled('main')`
-    padding-left: 150px;
+    padding: 35px 50px 50px 50px;
+    margin-top: 0;
+    margin-left: 75px;
+    width: 1170px;
+    max-width: 100%;
 `;
 
 const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the default title' }) => (
@@ -68,14 +73,6 @@ const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the
                 <SideBar>
                     <Link href="/">
                         <a>Home</a>
-                    </Link>{' '}
-                    |{' '}
-                    <Link href="/list-class">
-                        <a>List Example</a>
-                    </Link>{' '}
-                    |{' '}
-                    <Link href="/list-fc">
-                        <a>List Example (as Functional Component)</a>
                     </Link>{' '}
                     |{' '}
                     <Link href="/about">

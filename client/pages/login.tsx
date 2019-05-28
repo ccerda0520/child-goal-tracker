@@ -9,11 +9,11 @@ const ForgotPasswordForm = dynamic(() => import('../components/ForgotPasswordFor
 const PageWrapper = styled('div')`
     width: 450px;
     max-width: 100%;
-    margin: 0 auto 0 50px;
+    margin: 0 auto 0 0;
     border-radius: 5px;
-    margin-top: 50px;
     background: white;
     overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(31, 36, 38, 0.1);
 `;
 
 const ButtonLink = styled('button')`

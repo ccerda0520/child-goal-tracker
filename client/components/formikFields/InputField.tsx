@@ -21,6 +21,25 @@ const Input = styled('input')`
     padding: 10px 15px;
     border: 1px solid #585858;
     border-radius: 5px;
+    width: 100%;
+    ::placeholder,
+    ::-webkit-input-placeholder {
+        color: #a6a5a5;
+    }
+    :-ms-input-placeholder {
+        color: #a6a5a5;
+    }
+`;
+const TextArea = styled('textarea')`
+    color: black;
+    font-size: 17px;
+    line-height: 1;
+    padding: 10px 15px;
+    border: 1px solid #585858;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 100%;
+    min-height: 50px;
     ::placeholder,
     ::-webkit-input-placeholder {
         color: #a6a5a5;
@@ -53,6 +72,24 @@ const InputField: React.FunctionComponent<FieldProps & InputProps & CustomProps>
             <label>
                 <LabelText isLabelVisible={!!isLabelVisible}>{label}</LabelText>
                 <Input {...field} {...props} />
+                {touched[field.name] && errors[field.name] && <Error>{errors[field.name]}</Error>}
+            </label>
+        </InputFieldWrapper>
+    );
+};
+
+export const TextAreaField: React.FunctionComponent<FieldProps & InputProps & CustomProps> = ({
+    field,
+    form: { errors, touched },
+    label,
+    isLabelVisible,
+    ...props
+}) => {
+    return (
+        <InputFieldWrapper>
+            <label>
+                <LabelText isLabelVisible={!!isLabelVisible}>{label}</LabelText>
+                <TextArea {...field} {...props} />
                 {touched[field.name] && errors[field.name] && <Error>{errors[field.name]}</Error>}
             </label>
         </InputFieldWrapper>

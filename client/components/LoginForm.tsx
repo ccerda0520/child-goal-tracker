@@ -58,7 +58,7 @@ const LoginForm: React.FunctionComponent<{}> = () => {
                                             return;
                                         }
 
-                                        cache.writeQuery<MeQuery>({
+                                        cache.writeQuery    <MeQuery>({
                                             query: meQuery,
                                             data: {
                                                 __typename: 'Query',

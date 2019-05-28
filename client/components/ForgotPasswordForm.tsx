@@ -1,9 +1,9 @@
 import { Field, Formik } from 'formik';
 import React from 'react';
+import styled from 'styled-components';
 import { ForgotPasswordComponent } from '../generated/apolloComponents';
 import InputField from './formikFields/InputField';
 import { Button, Error } from './presentational/CommonStyles';
-import styled from 'styled-components';
 
 const Form = styled('form')`
     display: flex;
