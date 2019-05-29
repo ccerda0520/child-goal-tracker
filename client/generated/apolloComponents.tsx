@@ -133,6 +133,17 @@ export type User = {
   roles: Array<Scalars["String"]>;
   students?: Maybe<Array<Student>>;
 };
+export type CreateGoalMutationVariables = {
+  data: CreateGoalInput;
+};
+
+export type CreateGoalMutation = { __typename?: "Mutation" } & {
+  createGoal: { __typename?: "Goal" } & Pick<
+    Goal,
+    "id" | "name" | "description" | "category"
+  >;
+};
+
 export type GoalsQueryVariables = {
   studentId: Scalars["Float"];
 };
@@ -233,6 +244,73 @@ import * as ReactApollo from "react-apollo";
 import * as ReactApolloHooks from "react-apollo-hooks";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export const CreateGoalDocument = gql`
+  mutation CreateGoal($data: CreateGoalInput!) {
+    createGoal(data: $data) {
+      id
+      name
+      description
+      category
+    }
+  }
+`;
+export type CreateGoalMutationFn = ReactApollo.MutationFn<
+  CreateGoalMutation,
+  CreateGoalMutationVariables
+>;
+
+export const CreateGoalComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        CreateGoalMutation,
+        CreateGoalMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: CreateGoalMutationVariables }
+) => (
+  <ReactApollo.Mutation<CreateGoalMutation, CreateGoalMutationVariables>
+    mutation={CreateGoalDocument}
+    {...props}
+  />
+);
+
+export type CreateGoalProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<CreateGoalMutation, CreateGoalMutationVariables>
+> &
+  TChildProps;
+export function withCreateGoal<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    CreateGoalMutation,
+    CreateGoalMutationVariables,
+    CreateGoalProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    CreateGoalMutation,
+    CreateGoalMutationVariables,
+    CreateGoalProps<TChildProps>
+  >(CreateGoalDocument, {
+    alias: "withCreateGoal",
+    ...operationOptions
+  });
+}
+
+export function useCreateGoalMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    CreateGoalMutation,
+    CreateGoalMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    CreateGoalMutation,
+    CreateGoalMutationVariables
+  >(CreateGoalDocument, baseOptions);
+}
 export const GoalsDocument = gql`
   query Goals($studentId: Float!) {
     goals(studentId: $studentId) {

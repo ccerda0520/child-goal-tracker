@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import GoalGroup from './GoalGroup';
 
 interface Props {
-    title: string;
     goals: Goal[];
 }
 type Goal = {
@@ -35,7 +34,7 @@ const GoalList: React.FC<Props> = ({ goals }) => {
     return (
         <GoalListWrapper>
             <h1>Goals</h1>
-            <GoalGroup goals={languageGoals} title="Language" category="language"/>
+            <GoalGroup goals={languageGoals} title="Language" category="language" />
             <GoalGroup goals={selfHelpGoals} title="Self Help" category="self-help" />
             <GoalGroup goals={ssbGoals} title="SSB" category="ssb" />
             <GoalGroup goals={ssbGoals} title="SSB" category="ssb" />

@@ -1,8 +1,9 @@
 import React from 'react';
 import { useAsync } from 'react-async';
+import { MeStudentsQuery } from '../generated/apolloComponents';
 import { meStudentsQuery } from '../graphql/user/query/meStudents';
 import initApollo from '../lib/initApollo';
-const UserContext = React.createContext(undefined);
+const UserContext = React.createContext<undefined | MeStudentsQuery['me']>(undefined);
 
 const getUser = async () => {
     const apolloClient = initApollo(

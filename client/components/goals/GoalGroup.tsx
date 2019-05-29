@@ -85,7 +85,7 @@ const NewGoalToggleButton = styled('button')`
     }
 `;
 
-const GoalGroup: React.FC<Props> = ({ title, goals }) => {
+const GoalGroup: React.FC<Props> = ({ title, goals, category }) => {
     const [showNewGoalForm, setShowNewGoalForm] = React.useState(false);
     const toggleShowNewGoalForm = React.useCallback(() => setShowNewGoalForm(!showNewGoalForm), [showNewGoalForm]);
     const handleCancelNewGoal = React.useCallback(() => setShowNewGoalForm(false), []);
@@ -104,9 +104,7 @@ const GoalGroup: React.FC<Props> = ({ title, goals }) => {
                         </NewGoalToggleButton>
                     </GoalListItem>
                 )}
-                {showNewGoalForm &&
-                    <NewGoalForm onCancel={handleCancelNewGoal}/>
-                }
+                {showNewGoalForm && <NewGoalForm onCancel={handleCancelNewGoal} category={category}/>}
             </GoalContainer>
         </GoalGroupContainer>
     );

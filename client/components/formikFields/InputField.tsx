@@ -38,6 +38,7 @@ const TextArea = styled('textarea')`
     border: 1px solid #585858;
     border-radius: 5px;
     width: 100%;
+    min-width: 100%;
     max-width: 100%;
     min-height: 50px;
     ::placeholder,

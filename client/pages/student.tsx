@@ -3,6 +3,8 @@ import React from 'react';
 import { isArray } from 'util';
 import GoalList from '../components/goals/GoalList';
 import Layout from '../components/Layout';
+import { StudentProvider } from '../context/StudentContext';
+import { useUser } from '../context/UserContext';
 import { useGoalsQuery } from '../generated/apolloComponents';
 
 const Student = withRouter((props) => {
@@ -13,8 +15,20 @@ const Student = withRouter((props) => {
     if (!queryArgs || !queryArgs.id) {
         return <div>No student specified</div>;
     }
+
     const queryArgsId: string = isArray(queryArgs.id) ? queryArgs.id[0] : queryArgs.id;
     const studentId: number = parseInt(queryArgsId);
+
+    // check if student ID is inside list of students assigned to user
+    const user = useUser();
+    if (!user!.students || !user!.students.length) {
+        return <Layout>No Students Assigned to User</Layout>;
+    }
+
+    const student = user!.students.find((student) => parseInt(student.id) === studentId);
+    if (typeof student === 'undefined') {
+        return <Layout>No student assigned to this user with this id.</Layout>;
+    }
 
     const { data, loading, errors } = useGoalsQuery({
         suspend: false,
@@ -46,8 +60,10 @@ const Student = withRouter((props) => {
     }
 
     return (
-        <Layout>
-            <GoalList goals={goals} />
+        <Layout title="Student Dashboard">
+            <StudentProvider student={student}>
+                <GoalList goals={goals} />
+            </StudentProvider>
         </Layout>
     );
 });

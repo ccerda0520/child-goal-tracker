@@ -1,19 +1,21 @@
 import { Field, Formik } from 'formik';
-import Router from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 import * as Yup from 'yup';
-import { useCreateStudentMutation } from '../../generated/apolloComponents';
+import { useStudent } from '../../context/StudentContext';
+import { useCreateGoalMutation } from '../../generated/apolloComponents';
 import InputField, { TextAreaField } from '../formikFields/InputField';
 import { Button, Error } from '../presentational/CommonStyles';
 
 interface Props {
     onCancel: any;
+    category: string;
 }
 
 const newGoalValidationSchema = Yup.object().shape({
-    firstName: Yup.string().required('First Name is required'),
-    lastName: Yup.string().required('Last Name is required'),
+    goalName: Yup.string().required('Goal Name is required'),
+    goalDescription: Yup.string().required('Description is required'),
+    goalTrialsPerDay: Yup.number().required('Trials Per Day is required'),
 });
 const Form = styled('form')`
     width: 100%;
@@ -40,20 +42,29 @@ const TwoComponentRowWrapper = styled('div')`
     }
 `;
 
-const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel }) => {
-    const createGoal = useCreateStudentMutation();
+const CancelButton = styled(Button)`
+    margin-left: 10px;
+`;
+
+const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category }) => {
+    const student = useStudent();
+    const createGoal = useCreateGoalMutation();
     return (
         <div>
             <Formik
                 validationSchema={newGoalValidationSchema}
                 onSubmit={async (values, { setSubmitting, setErrors }) => {
                     const { goalName, goalDescription, goalTrialsPerDay } = values;
+                    console.log(values);
                     setSubmitting(true);
                     const response = await createGoal({
                         variables: {
                             data: {
-                                firstName,
-                                lastName,
+                                name: goalName,
+                                description: goalDescription,
+                                trialsPerDay: parseInt(goalTrialsPerDay),
+                                category: category,
+                                studentId: parseFloat(student.id),
                             },
                         },
                     }).catch((err) => {
@@ -63,8 +74,8 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel }) => {
                         });
                         setSubmitting(false);
                     });
+                    console.log(response);
                     setSubmitting(false);
-                    Router.push('/');
                 }}
                 initialValues={{
                     goalName: '',
@@ -99,9 +110,9 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel }) => {
                         <Button type="submit" disabled={isSubmitting}>
                             Submit
                         </Button>
-                        <Button type="button" onClick={onCancel}>
+                        <CancelButton type="button" onClick={onCancel}>
                             Cancel
-                        </Button>
+                        </CancelButton>
                         {errors['createGoalFailed'] && <Error>{errors['createGoalFailed']}</Error>}
                     </Form>
                 )}
