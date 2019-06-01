@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne} from "typeorm";
-import {Goal} from "./goal";
-import {Field, ID, ObjectType} from "type-graphql";
+import { Field, ID, ObjectType } from 'type-graphql';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Goal } from './goal';
 
 @ObjectType()
 @Entity()
@@ -18,6 +18,6 @@ export class Trial extends BaseEntity {
     goalId: number;
 
     @Field(() => Goal)
-    @ManyToOne(() => Goal, goal => goal.trials)
+    @ManyToOne(() => Goal, (goal) => goal.trials)
     goal: Goal;
 }

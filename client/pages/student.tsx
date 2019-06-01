@@ -3,13 +3,16 @@ import React from 'react';
 import { isArray } from 'util';
 import GoalList from '../components/goals/GoalList';
 import Layout from '../components/Layout';
+import { ActiveGoalProvider } from '../context/ActiveGoalContext';
 import { StudentProvider } from '../context/StudentContext';
 import { useUser } from '../context/UserContext';
-import { useGoalsQuery } from '../generated/apolloComponents';
+import { useIncompleteGoalsQuery } from '../generated/apolloComponents';
 
 const Student = withRouter((props) => {
     const [initialLoading, setInitialLoading] = React.useState(true);
     const [goals, setGoals] = React.useState();
+    const [activeGoal, setActiveGoal] = React.useState();
+    
 
     const queryArgs = props.router!.query;
     if (!queryArgs || !queryArgs.id) {
@@ -30,7 +33,7 @@ const Student = withRouter((props) => {
         return <Layout>No student assigned to this user with this id.</Layout>;
     }
 
-    const { data, loading, errors } = useGoalsQuery({
+    const { data, loading, errors } = useIncompleteGoalsQuery({
         suspend: false,
         fetchPolicy: 'cache-and-network',
         variables: {
@@ -62,7 +65,9 @@ const Student = withRouter((props) => {
     return (
         <Layout title="Student Dashboard">
             <StudentProvider student={student}>
-                <GoalList goals={goals} />
+                <ActiveGoalProvider>
+                    <GoalList goals={goals} />
+                </ActiveGoalProvider>
             </StudentProvider>
         </Layout>
     );

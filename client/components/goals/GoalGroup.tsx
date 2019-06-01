@@ -3,17 +3,6 @@ import styled from 'styled-components';
 import { darkBlue, lightBlue } from '../presentational/variables';
 import NewGoalForm from './NewGoalForm';
 
-interface Props {
-    title: string;
-    goals: Goal[];
-    category: string;
-}
-type Goal = {
-    id: number;
-    name: string;
-    description: string;
-    category: string;
-};
 const GoalGroupContainer = styled('div')`
     padding: 25px;
     background: white;
@@ -85,18 +74,38 @@ const NewGoalToggleButton = styled('button')`
     }
 `;
 
+interface Props {
+    title: string;
+    goals: Goal[];
+    category: string;
+}
+type Goal = {
+    id: number;
+    name: string;
+    description: string;
+    category: string;
+};
+
 const GoalGroup: React.FC<Props> = ({ title, goals, category }) => {
     const [showNewGoalForm, setShowNewGoalForm] = React.useState(false);
+    const [groupGoals, setGroupGoals] = React.useState(goals);
     const toggleShowNewGoalForm = React.useCallback(() => setShowNewGoalForm(!showNewGoalForm), [showNewGoalForm]);
     const handleCancelNewGoal = React.useCallback(() => setShowNewGoalForm(false), []);
+    const handleSubmitCallBack = React.useCallback(
+        (newGoal: Goal) => {
+            setGroupGoals([...groupGoals, newGoal]);
+            setShowNewGoalForm(false);
+        },
+        [groupGoals],
+    );
     return (
         <GoalGroupContainer>
             <H2>{title}</H2>
             <GoalContainer>
-                {goals.map((goal) => {
+                {groupGoals.map((goal) => {
                     return <GoalListItem key={goal.id}>{goal.name}</GoalListItem>;
                 })}
-                {!showNewGoalForm && (
+                {groupGoals.length < 10 && !showNewGoalForm && (
                     <GoalListItem>
                         <NewGoalToggleButton onClick={toggleShowNewGoalForm} aria-label="Add New Goal">
                             <NewGoalToggleButtonPlus>+</NewGoalToggleButtonPlus>
@@ -104,7 +113,7 @@ const GoalGroup: React.FC<Props> = ({ title, goals, category }) => {
                         </NewGoalToggleButton>
                     </GoalListItem>
                 )}
-                {showNewGoalForm && <NewGoalForm onCancel={handleCancelNewGoal} category={category}/>}
+                {groupGoals.length < 10 && showNewGoalForm && <NewGoalForm onCancel={handleCancelNewGoal} category={category} onSubmitCallback={handleSubmitCallBack} />}
             </GoalContainer>
         </GoalGroupContainer>
     );

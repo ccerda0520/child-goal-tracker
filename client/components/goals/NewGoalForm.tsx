@@ -7,11 +7,6 @@ import { useCreateGoalMutation } from '../../generated/apolloComponents';
 import InputField, { TextAreaField } from '../formikFields/InputField';
 import { Button, Error } from '../presentational/CommonStyles';
 
-interface Props {
-    onCancel: any;
-    category: string;
-}
-
 const newGoalValidationSchema = Yup.object().shape({
     goalName: Yup.string().required('Goal Name is required'),
     goalDescription: Yup.string().required('Description is required'),
@@ -46,7 +41,13 @@ const CancelButton = styled(Button)`
     margin-left: 10px;
 `;
 
-const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category }) => {
+interface Props {
+    onCancel: any;
+    category: string;
+    onSubmitCallback: Function;
+}
+
+const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSubmitCallback }) => {
     const student = useStudent();
     const createGoal = useCreateGoalMutation();
     return (
@@ -55,9 +56,8 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category }) => 
                 validationSchema={newGoalValidationSchema}
                 onSubmit={async (values, { setSubmitting, setErrors }) => {
                     const { goalName, goalDescription, goalTrialsPerDay } = values;
-                    console.log(values);
                     setSubmitting(true);
-                    const response = await createGoal({
+                    const response: any = await createGoal({
                         variables: {
                             data: {
                                 name: goalName,
@@ -74,8 +74,9 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category }) => 
                         });
                         setSubmitting(false);
                     });
-                    console.log(response);
+
                     setSubmitting(false);
+                    onSubmitCallback(response.data.createGoal);
                 }}
                 initialValues={{
                     goalName: '',

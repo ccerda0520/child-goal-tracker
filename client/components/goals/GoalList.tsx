@@ -37,8 +37,8 @@ const GoalList: React.FC<Props> = ({ goals }) => {
             <GoalGroup goals={languageGoals} title="Language" category="language" />
             <GoalGroup goals={selfHelpGoals} title="Self Help" category="self-help" />
             <GoalGroup goals={ssbGoals} title="SSB" category="ssb" />
-            <GoalGroup goals={ssbGoals} title="SSB" category="ssb" />
-            <GoalGroup goals={ssbGoals} title="SSB" category="ssb" />
+            <GoalGroup goals={ssbGoals} title="Social Skills" category="social-skills" />
+            <GoalGroup goals={ssbGoals} title="Age Appropriate" category="age-appropriate" />
         </GoalListWrapper>
     );
 };

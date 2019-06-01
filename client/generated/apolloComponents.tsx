@@ -95,10 +95,15 @@ export type PasswordInput = {
 
 export type Query = {
   goals?: Maybe<Array<Goal>>;
+  incompleteGoals?: Maybe<Array<Goal>>;
   me?: Maybe<User>;
 };
 
 export type QueryGoalsArgs = {
+  studentId: Scalars["Float"];
+};
+
+export type QueryIncompleteGoalsArgs = {
   studentId: Scalars["Float"];
 };
 
@@ -149,6 +154,21 @@ export type GoalsQueryVariables = {
 };
 
 export type GoalsQuery = { __typename?: "Query" } & {
+  goals: Maybe<
+    Array<
+      { __typename?: "Goal" } & Pick<
+        Goal,
+        "id" | "name" | "description" | "category"
+      >
+    >
+  >;
+};
+
+export type IncompleteGoalsQueryVariables = {
+  studentId: Scalars["Float"];
+};
+
+export type IncompleteGoalsQuery = { __typename?: "Query" } & {
   goals: Maybe<
     Array<
       { __typename?: "Goal" } & Pick<
@@ -364,6 +384,66 @@ export function useGoalsQuery(
     GoalsDocument,
     baseOptions
   );
+}
+export const IncompleteGoalsDocument = gql`
+  query IncompleteGoals($studentId: Float!) {
+    goals(studentId: $studentId) {
+      id
+      name
+      description
+      category
+    }
+  }
+`;
+
+export const IncompleteGoalsComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.QueryProps<
+        IncompleteGoalsQuery,
+        IncompleteGoalsQueryVariables
+      >,
+      "query"
+    >,
+    "variables"
+  > & { variables: IncompleteGoalsQueryVariables }
+) => (
+  <ReactApollo.Query<IncompleteGoalsQuery, IncompleteGoalsQueryVariables>
+    query={IncompleteGoalsDocument}
+    {...props}
+  />
+);
+
+export type IncompleteGoalsProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<IncompleteGoalsQuery, IncompleteGoalsQueryVariables>
+> &
+  TChildProps;
+export function withIncompleteGoals<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    IncompleteGoalsQuery,
+    IncompleteGoalsQueryVariables,
+    IncompleteGoalsProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    IncompleteGoalsQuery,
+    IncompleteGoalsQueryVariables,
+    IncompleteGoalsProps<TChildProps>
+  >(IncompleteGoalsDocument, {
+    alias: "withIncompleteGoals",
+    ...operationOptions
+  });
+}
+
+export function useIncompleteGoalsQuery(
+  baseOptions?: ReactApolloHooks.QueryHookOptions<IncompleteGoalsQueryVariables>
+) {
+  return ReactApolloHooks.useQuery<
+    IncompleteGoalsQuery,
+    IncompleteGoalsQueryVariables
+  >(IncompleteGoalsDocument, baseOptions);
 }
 export const ConfirmUserDocument = gql`
   mutation ConfirmUser($token: String!) {
