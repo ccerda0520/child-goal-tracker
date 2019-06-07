@@ -30,6 +30,7 @@ const TopBarWrapper = styled('div')`
     top: 0;
     left: 0;
     background: #1e3054;
+    z-index: 100;
 `;
 const SideBar = styled('nav')``;
 const SideBarWrapper = styled('div')`
@@ -41,6 +42,7 @@ const SideBarWrapper = styled('div')`
     height: 100%;
     background: white;
     box-shadow: 0 1px 3px 0 rgba(31, 36, 38, 0.1);
+    z-index: 100;
 `;
 const MainWrapper = styled('main')`
     padding: 35px 50px 50px 50px;

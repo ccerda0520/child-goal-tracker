@@ -1,13 +1,7 @@
 import React from 'react';
+import IGoal from '../types/Goal';
 
-type Goal = {
-    id: number;
-    name: string;
-    description: string;
-    category: string;
-};
-
-const ActiveGoalStateContext = React.createContext<undefined | Goal>(undefined);
+const ActiveGoalStateContext = React.createContext<undefined | IGoal>(undefined);
 const ActiveGoalDispatchContext = React.createContext<any>(undefined);
 
 const activeGoalReducer = (state: any, action: any) => {
@@ -22,7 +16,7 @@ const activeGoalReducer = (state: any, action: any) => {
 };
 
 const ActiveGoalProvider = ({ children }: any) => {
-    const [state, setActiveGoal] = React.useReducer(activeGoalReducer, undefined);
+    const [state, setActiveGoal] = React.useReducer(activeGoalReducer, {});
     return (
         <ActiveGoalStateContext.Provider value={state}>
             <ActiveGoalDispatchContext.Provider value={setActiveGoal}>{children}</ActiveGoalDispatchContext.Provider>

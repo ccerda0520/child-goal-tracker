@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Goal } from './goal';
 
 @ObjectType()
@@ -10,8 +10,12 @@ export class Trial extends BaseEntity {
     id: number;
 
     @Field()
-    @Column()
-    success: boolean;
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @Field(() => [Boolean])
+    @Column({ type: 'bool', array: true, nullable: true })
+    trialData: boolean[];
 
     @Field(() => Number)
     @Column()

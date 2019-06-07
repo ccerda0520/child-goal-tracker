@@ -6,6 +6,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
 
 export type ChangePasswordInput = {
@@ -27,7 +29,7 @@ export type CreateStudentInput = {
 };
 
 export type CreateTrialInput = {
-  success: Scalars["Boolean"];
+  trialData: Array<Scalars["Boolean"]>;
   goalId: Scalars["Float"];
 };
 
@@ -48,6 +50,7 @@ export type Mutation = {
   createGoal: Goal;
   createStudent: Student;
   createTrial: Trial;
+  updateTrial: Trial;
   changePassword?: Maybe<User>;
   confirmUser?: Maybe<Scalars["Boolean"]>;
   forgotPassword?: Maybe<Scalars["Boolean"]>;
@@ -66,6 +69,10 @@ export type MutationCreateStudentArgs = {
 
 export type MutationCreateTrialArgs = {
   data: CreateTrialInput;
+};
+
+export type MutationUpdateTrialArgs = {
+  data: UpdateTrialInput;
 };
 
 export type MutationChangePasswordArgs = {
@@ -96,6 +103,8 @@ export type PasswordInput = {
 export type Query = {
   goals?: Maybe<Array<Goal>>;
   incompleteGoals?: Maybe<Array<Goal>>;
+  currentTrial?: Maybe<Trial>;
+  trial?: Maybe<Trial>;
   me?: Maybe<User>;
 };
 
@@ -105,6 +114,14 @@ export type QueryGoalsArgs = {
 
 export type QueryIncompleteGoalsArgs = {
   studentId: Scalars["Float"];
+};
+
+export type QueryCurrentTrialArgs = {
+  goalId: Scalars["Float"];
+};
+
+export type QueryTrialArgs = {
+  goalId: Scalars["Float"];
 };
 
 export type RegisterInput = {
@@ -125,9 +142,15 @@ export type Student = {
 
 export type Trial = {
   id: Scalars["ID"];
-  success: Scalars["Boolean"];
+  createdAt: Scalars["DateTime"];
+  trialData: Array<Scalars["Boolean"]>;
   goalId: Scalars["Float"];
   goal: Goal;
+};
+
+export type UpdateTrialInput = {
+  trialData: Array<Scalars["Boolean"]>;
+  id: Scalars["Float"];
 };
 
 export type User = {
@@ -158,7 +181,7 @@ export type GoalsQuery = { __typename?: "Query" } & {
     Array<
       { __typename?: "Goal" } & Pick<
         Goal,
-        "id" | "name" | "description" | "category"
+        "id" | "name" | "description" | "category" | "trialsPerDay"
       >
     >
   >;
@@ -173,9 +196,41 @@ export type IncompleteGoalsQuery = { __typename?: "Query" } & {
     Array<
       { __typename?: "Goal" } & Pick<
         Goal,
-        "id" | "name" | "description" | "category"
+        "id" | "name" | "description" | "category" | "trialsPerDay"
       >
     >
+  >;
+};
+
+export type CreateTrialMutationVariables = {
+  data: CreateTrialInput;
+};
+
+export type CreateTrialMutation = { __typename?: "Mutation" } & {
+  createTrial: { __typename?: "Trial" } & Pick<
+    Trial,
+    "id" | "trialData" | "createdAt"
+  >;
+};
+
+export type CurrentTrialQueryVariables = {
+  goalId: Scalars["Float"];
+};
+
+export type CurrentTrialQuery = { __typename?: "Query" } & {
+  currentTrial: Maybe<
+    { __typename?: "Trial" } & Pick<Trial, "id" | "trialData" | "createdAt">
+  >;
+};
+
+export type UpdateTrialMutationVariables = {
+  data: UpdateTrialInput;
+};
+
+export type UpdateTrialMutation = { __typename?: "Mutation" } & {
+  updateTrial: { __typename?: "Trial" } & Pick<
+    Trial,
+    "id" | "trialData" | "createdAt"
   >;
 };
 
@@ -338,6 +393,7 @@ export const GoalsDocument = gql`
       name
       description
       category
+      trialsPerDay
     }
   }
 `;
@@ -392,6 +448,7 @@ export const IncompleteGoalsDocument = gql`
       name
       description
       category
+      trialsPerDay
     }
   }
 `;
@@ -444,6 +501,194 @@ export function useIncompleteGoalsQuery(
     IncompleteGoalsQuery,
     IncompleteGoalsQueryVariables
   >(IncompleteGoalsDocument, baseOptions);
+}
+export const CreateTrialDocument = gql`
+  mutation CreateTrial($data: CreateTrialInput!) {
+    createTrial(data: $data) {
+      id
+      trialData
+      createdAt
+    }
+  }
+`;
+export type CreateTrialMutationFn = ReactApollo.MutationFn<
+  CreateTrialMutation,
+  CreateTrialMutationVariables
+>;
+
+export const CreateTrialComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        CreateTrialMutation,
+        CreateTrialMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: CreateTrialMutationVariables }
+) => (
+  <ReactApollo.Mutation<CreateTrialMutation, CreateTrialMutationVariables>
+    mutation={CreateTrialDocument}
+    {...props}
+  />
+);
+
+export type CreateTrialProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<CreateTrialMutation, CreateTrialMutationVariables>
+> &
+  TChildProps;
+export function withCreateTrial<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    CreateTrialMutation,
+    CreateTrialMutationVariables,
+    CreateTrialProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    CreateTrialMutation,
+    CreateTrialMutationVariables,
+    CreateTrialProps<TChildProps>
+  >(CreateTrialDocument, {
+    alias: "withCreateTrial",
+    ...operationOptions
+  });
+}
+
+export function useCreateTrialMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    CreateTrialMutation,
+    CreateTrialMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    CreateTrialMutation,
+    CreateTrialMutationVariables
+  >(CreateTrialDocument, baseOptions);
+}
+export const CurrentTrialDocument = gql`
+  query CurrentTrial($goalId: Float!) {
+    currentTrial(goalId: $goalId) {
+      id
+      trialData
+      createdAt
+    }
+  }
+`;
+
+export const CurrentTrialComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.QueryProps<CurrentTrialQuery, CurrentTrialQueryVariables>,
+      "query"
+    >,
+    "variables"
+  > & { variables: CurrentTrialQueryVariables }
+) => (
+  <ReactApollo.Query<CurrentTrialQuery, CurrentTrialQueryVariables>
+    query={CurrentTrialDocument}
+    {...props}
+  />
+);
+
+export type CurrentTrialProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<CurrentTrialQuery, CurrentTrialQueryVariables>
+> &
+  TChildProps;
+export function withCurrentTrial<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    CurrentTrialQuery,
+    CurrentTrialQueryVariables,
+    CurrentTrialProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    CurrentTrialQuery,
+    CurrentTrialQueryVariables,
+    CurrentTrialProps<TChildProps>
+  >(CurrentTrialDocument, {
+    alias: "withCurrentTrial",
+    ...operationOptions
+  });
+}
+
+export function useCurrentTrialQuery(
+  baseOptions?: ReactApolloHooks.QueryHookOptions<CurrentTrialQueryVariables>
+) {
+  return ReactApolloHooks.useQuery<
+    CurrentTrialQuery,
+    CurrentTrialQueryVariables
+  >(CurrentTrialDocument, baseOptions);
+}
+export const UpdateTrialDocument = gql`
+  mutation UpdateTrial($data: UpdateTrialInput!) {
+    updateTrial(data: $data) {
+      id
+      trialData
+      createdAt
+    }
+  }
+`;
+export type UpdateTrialMutationFn = ReactApollo.MutationFn<
+  UpdateTrialMutation,
+  UpdateTrialMutationVariables
+>;
+
+export const UpdateTrialComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        UpdateTrialMutation,
+        UpdateTrialMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: UpdateTrialMutationVariables }
+) => (
+  <ReactApollo.Mutation<UpdateTrialMutation, UpdateTrialMutationVariables>
+    mutation={UpdateTrialDocument}
+    {...props}
+  />
+);
+
+export type UpdateTrialProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<UpdateTrialMutation, UpdateTrialMutationVariables>
+> &
+  TChildProps;
+export function withUpdateTrial<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    UpdateTrialMutation,
+    UpdateTrialMutationVariables,
+    UpdateTrialProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    UpdateTrialMutation,
+    UpdateTrialMutationVariables,
+    UpdateTrialProps<TChildProps>
+  >(UpdateTrialDocument, {
+    alias: "withUpdateTrial",
+    ...operationOptions
+  });
+}
+
+export function useUpdateTrialMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    UpdateTrialMutation,
+    UpdateTrialMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    UpdateTrialMutation,
+    UpdateTrialMutationVariables
+  >(UpdateTrialDocument, baseOptions);
 }
 export const ConfirmUserDocument = gql`
   mutation ConfirmUser($token: String!) {

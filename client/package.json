@@ -19,8 +19,8 @@
         "isomorphic-unfetch": "^3.0.0",
         "next": "^8.1.0",
         "react": "^16.8.6",
-        "react-async": "6.2.0",
         "react-apollo": "^2.5.5",
+        "react-async": "^6.2.0",
         "react-dom": "^16.8.6",
         "styled-components": "^4.2.0",
         "yup": "^0.27.0"

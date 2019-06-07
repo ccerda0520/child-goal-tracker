@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import IGoal from '../../types/Goal';
 import { darkBlue, lightBlue } from '../presentational/variables';
+import Goal from './Goal';
 import NewGoalForm from './NewGoalForm';
 
 const GoalGroupContainer = styled('div')`
@@ -8,7 +10,7 @@ const GoalGroupContainer = styled('div')`
     background: white;
     border-radius: 10px;
     display: inline-block;
-    width: 66%;
+    width: 100%;
     box-shadow: 0 1px 3px 0 rgba(31, 36, 38, 0.1);
 `;
 const H2 = styled('h2')`
@@ -25,7 +27,7 @@ const GoalContainer = styled('ul')`
 `;
 
 const GoalListItem = styled('li')`
-    padding: 15px 0;
+    padding: 0;
     border-top: 2px solid #337abb;
     font-size: 17px;
     &:last-of-type {
@@ -65,6 +67,7 @@ const NewGoalToggleButton = styled('button')`
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin-top: 15px;
     &:hover,
     &:focus {
         ${NewGoalToggleButtonPlus} {
@@ -76,15 +79,9 @@ const NewGoalToggleButton = styled('button')`
 
 interface Props {
     title: string;
-    goals: Goal[];
+    goals: IGoal[];
     category: string;
 }
-type Goal = {
-    id: number;
-    name: string;
-    description: string;
-    category: string;
-};
 
 const GoalGroup: React.FC<Props> = ({ title, goals, category }) => {
     const [showNewGoalForm, setShowNewGoalForm] = React.useState(false);
@@ -92,7 +89,7 @@ const GoalGroup: React.FC<Props> = ({ title, goals, category }) => {
     const toggleShowNewGoalForm = React.useCallback(() => setShowNewGoalForm(!showNewGoalForm), [showNewGoalForm]);
     const handleCancelNewGoal = React.useCallback(() => setShowNewGoalForm(false), []);
     const handleSubmitCallBack = React.useCallback(
-        (newGoal: Goal) => {
+        (newGoal: IGoal) => {
             setGroupGoals([...groupGoals, newGoal]);
             setShowNewGoalForm(false);
         },
@@ -103,7 +100,11 @@ const GoalGroup: React.FC<Props> = ({ title, goals, category }) => {
             <H2>{title}</H2>
             <GoalContainer>
                 {groupGoals.map((goal) => {
-                    return <GoalListItem key={goal.id}>{goal.name}</GoalListItem>;
+                    return (
+                        <GoalListItem key={goal.id}>
+                            <Goal goal={goal} />
+                        </GoalListItem>
+                    );
                 })}
                 {groupGoals.length < 10 && !showNewGoalForm && (
                     <GoalListItem>
@@ -113,7 +114,9 @@ const GoalGroup: React.FC<Props> = ({ title, goals, category }) => {
                         </NewGoalToggleButton>
                     </GoalListItem>
                 )}
-                {groupGoals.length < 10 && showNewGoalForm && <NewGoalForm onCancel={handleCancelNewGoal} category={category} onSubmitCallback={handleSubmitCallBack} />}
+                {groupGoals.length < 10 && showNewGoalForm && (
+                    <NewGoalForm onCancel={handleCancelNewGoal} category={category} onSubmitCallback={handleSubmitCallBack} />
+                )}
             </GoalContainer>
         </GoalGroupContainer>
     );

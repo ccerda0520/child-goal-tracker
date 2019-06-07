@@ -7,6 +7,7 @@ export const incompleteGoalsQuery = gql`
             name
             description
             category
+            trialsPerDay
         }
     }
 `;

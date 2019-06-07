@@ -4314,7 +4314,7 @@ react-apollo@^2.5.5:
     ts-invariant "^0.4.0"
     tslib "^1.9.3"
 
-react-async@6.2.0:
+react-async@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/react-async/-/react-async-6.2.0.tgz#6729126910032e3674c7a566f8216b2c76d19be0"
   optionalDependencies:

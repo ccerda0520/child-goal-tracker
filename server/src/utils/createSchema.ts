@@ -4,6 +4,9 @@ import { GoalsResolver } from '../modules/goal/goals';
 import { IncompleteGoalsResolver } from '../modules/goal/incompleteGoals';
 import { CreateStudentResolver } from '../modules/student/createStudent';
 import { CreateTrialResolver } from '../modules/trial/createTrial';
+import { CurrentTrialResolver } from '../modules/trial/currentTrial';
+import { TrialResolver } from '../modules/trial/trial';
+import { UpdateTrialResolver } from '../modules/trial/updateTrial';
 import { ChangePasswordResolver } from '../modules/user/changePassword';
 import { ConfirmUserResolver } from '../modules/user/confirmUser';
 import { ForgotPasswordResolver } from '../modules/user/forgotPassword';
@@ -31,6 +34,9 @@ export const createSchema = async () => {
             IncompleteGoalsResolver,
             //Trial Resolvers
             CreateTrialResolver,
+            TrialResolver,
+            CurrentTrialResolver,
+            UpdateTrialResolver,
         ],
     });
 };

@@ -3,21 +3,32 @@ import React from 'react';
 import styled from 'styled-components';
 import { isArray } from 'util';
 import GoalList from '../components/goals/GoalList';
-import GoalSidebar from '../components/goals/GoalSidebar';
 import Layout from '../components/Layout';
+import SessionSidebar from '../components/session/SessionSidebar';
 import { ActiveGoalProvider } from '../context/ActiveGoalContext';
 import { StudentProvider } from '../context/StudentContext';
 import { useUser } from '../context/UserContext';
 import { useIncompleteGoalsQuery } from '../generated/apolloComponents';
-
-const StudentWrapper = styled('div')`
+import { getMonthString } from '../helpers/date';
+const SessionWrapper = styled('div')`
     display: flex;
     flex-direction: row;
     align-items: flex-start;
 `;
 
-const Student = withRouter((props) => {
+const Session = withRouter((props) => {
     const [initialLoading, setInitialLoading] = React.useState(true);
+    const today = React.useMemo(() => {
+        const today = new Date();
+        const month = getMonthString(today.getMonth());
+        const day = today.getDate();
+
+        return {
+            month,
+            day,
+        };
+    }, []);
+
     const [goals, setGoals] = React.useState();
 
     const queryArgs = props.router!.query;
@@ -69,18 +80,20 @@ const Student = withRouter((props) => {
     }
 
     return (
-        <Layout title="Student Dashboard">
+        <Layout title="Session">
             <StudentProvider student={student}>
                 <ActiveGoalProvider>
-                    <h1>Goals</h1>
-                    <StudentWrapper>
+                    <h1>
+                        Session ({today.month} {today.day})
+                    </h1>
+                    <SessionWrapper>
                         <GoalList goals={goals} />
-                        <GoalSidebar />
-                    </StudentWrapper>
+                        <SessionSidebar />
+                    </SessionWrapper>
                 </ActiveGoalProvider>
             </StudentProvider>
         </Layout>
     );
 });
 
-export default Student;
+export default Session;
