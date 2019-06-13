@@ -1,28 +1,7 @@
 import React from 'react';
-import { useAsync } from 'react-async';
 import { MeStudentsQuery } from '../generated/apolloComponents';
-import { meStudentsQuery } from '../graphql/user/query/meStudents';
-import initApollo from '../lib/initApollo';
+import { useAuth } from './AuthContext';
 const UserContext = React.createContext<undefined | MeStudentsQuery['me']>(undefined);
-
-const getUser = async () => {
-    const apolloClient = initApollo(
-        {},
-        {
-            getToken: () => '',
-        },
-    );
-    const response = await apolloClient.query({
-        query: meStudentsQuery,
-    });
-    if (!response || !response.data || !response.data.me) {
-        return { user: null };
-    }
-
-    return {
-        user: response.data.me,
-    };
-};
 
 const useUser = () => {
     const context = React.useContext(UserContext);
@@ -33,33 +12,11 @@ const useUser = () => {
 };
 
 const UserProvider = (props: any) => {
-    const [firstAttemptFinished, setFirstAttemptFinished] = React.useState(false);
-    const { data = { user: null }, error, isRejected, isPending, isSettled, reload } = useAsync({
-        promiseFn: getUser,
-    });
+    const {
+        data: { user },
+    } = useAuth();
 
-    // Use the useAsync hook with useeffect in order to fetch a user, but only once
-    React.useLayoutEffect(() => {
-        if (isSettled) {
-            setFirstAttemptFinished(true);
-        }
-    }, [isSettled]);
-
-    if (!firstAttemptFinished) {
-        if (isPending) {
-            return <div>hi</div>;
-        }
-        if (isRejected) {
-            return (
-                <div>
-                    <p>Uh oh... There's a problem. Try refreshing the app.</p>
-                    <pre>{error!.message}</pre>
-                </div>
-            );
-        }
-    }
-
-    return <UserContext.Provider value={data!.user} {...props} />;
+    return <UserContext.Provider value={user} {...props} />;
 };
 
 export { UserProvider, useUser };

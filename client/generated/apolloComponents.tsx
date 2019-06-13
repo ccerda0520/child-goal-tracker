@@ -33,6 +33,12 @@ export type CreateTrialInput = {
   goalId: Scalars["Float"];
 };
 
+export type GetTrialsByRangeInput = {
+  goalId: Scalars["Float"];
+  start: Scalars["DateTime"];
+  end: Scalars["DateTime"];
+};
+
 export type Goal = {
   id: Scalars["ID"];
   name: Scalars["String"];
@@ -104,6 +110,7 @@ export type Query = {
   goals?: Maybe<Array<Goal>>;
   incompleteGoals?: Maybe<Array<Goal>>;
   currentTrial?: Maybe<Trial>;
+  getTrialsByRange?: Maybe<Array<Trial>>;
   trial?: Maybe<Trial>;
   me?: Maybe<User>;
 };
@@ -118,6 +125,10 @@ export type QueryIncompleteGoalsArgs = {
 
 export type QueryCurrentTrialArgs = {
   goalId: Scalars["Float"];
+};
+
+export type QueryGetTrialsByRangeArgs = {
+  data: GetTrialsByRangeInput;
 };
 
 export type QueryTrialArgs = {
@@ -220,6 +231,18 @@ export type CurrentTrialQueryVariables = {
 export type CurrentTrialQuery = { __typename?: "Query" } & {
   currentTrial: Maybe<
     { __typename?: "Trial" } & Pick<Trial, "id" | "trialData" | "createdAt">
+  >;
+};
+
+export type GetTrialsByRangeQueryVariables = {
+  data: GetTrialsByRangeInput;
+};
+
+export type GetTrialsByRangeQuery = { __typename?: "Query" } & {
+  getTrialsByRange: Maybe<
+    Array<
+      { __typename?: "Trial" } & Pick<Trial, "id" | "trialData" | "createdAt">
+    >
   >;
 };
 
@@ -623,6 +646,67 @@ export function useCurrentTrialQuery(
     CurrentTrialQuery,
     CurrentTrialQueryVariables
   >(CurrentTrialDocument, baseOptions);
+}
+export const GetTrialsByRangeDocument = gql`
+  query GetTrialsByRange($data: GetTrialsByRangeInput!) {
+    getTrialsByRange(data: $data) {
+      id
+      trialData
+      createdAt
+    }
+  }
+`;
+
+export const GetTrialsByRangeComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.QueryProps<
+        GetTrialsByRangeQuery,
+        GetTrialsByRangeQueryVariables
+      >,
+      "query"
+    >,
+    "variables"
+  > & { variables: GetTrialsByRangeQueryVariables }
+) => (
+  <ReactApollo.Query<GetTrialsByRangeQuery, GetTrialsByRangeQueryVariables>
+    query={GetTrialsByRangeDocument}
+    {...props}
+  />
+);
+
+export type GetTrialsByRangeProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<GetTrialsByRangeQuery, GetTrialsByRangeQueryVariables>
+> &
+  TChildProps;
+export function withGetTrialsByRange<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    GetTrialsByRangeQuery,
+    GetTrialsByRangeQueryVariables,
+    GetTrialsByRangeProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    GetTrialsByRangeQuery,
+    GetTrialsByRangeQueryVariables,
+    GetTrialsByRangeProps<TChildProps>
+  >(GetTrialsByRangeDocument, {
+    alias: "withGetTrialsByRange",
+    ...operationOptions
+  });
+}
+
+export function useGetTrialsByRangeQuery(
+  baseOptions?: ReactApolloHooks.QueryHookOptions<
+    GetTrialsByRangeQueryVariables
+  >
+) {
+  return ReactApolloHooks.useQuery<
+    GetTrialsByRangeQuery,
+    GetTrialsByRangeQueryVariables
+  >(GetTrialsByRangeDocument, baseOptions);
 }
 export const UpdateTrialDocument = gql`
   mutation UpdateTrial($data: UpdateTrialInput!) {

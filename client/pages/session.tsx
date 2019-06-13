@@ -5,6 +5,8 @@ import { isArray } from 'util';
 import GoalList from '../components/goals/GoalList';
 import Layout from '../components/Layout';
 import SessionSidebar from '../components/session/SessionSidebar';
+import Spinner from '../components/Spinner';
+import { withAuth } from '../components/withAuth';
 import { ActiveGoalProvider } from '../context/ActiveGoalContext';
 import { StudentProvider } from '../context/StudentContext';
 import { useUser } from '../context/UserContext';
@@ -61,7 +63,7 @@ const Session = withRouter((props) => {
     if (loading) {
         return (
             <Layout>
-                <div>loading...</div>{' '}
+                <Spinner />
             </Layout>
         );
     }
@@ -84,7 +86,7 @@ const Session = withRouter((props) => {
             <StudentProvider student={student}>
                 <ActiveGoalProvider>
                     <h1>
-                        Session ({today.month} {today.day})
+                        {student.firstName}'s Session ({today.month} {today.day})
                     </h1>
                     <SessionWrapper>
                         <GoalList goals={goals} />
@@ -96,4 +98,4 @@ const Session = withRouter((props) => {
     );
 });
 
-export default Session;
+export default withAuth(Session);

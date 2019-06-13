@@ -63,7 +63,7 @@ const StudentList: React.FunctionComponent<Props> = ({ students }) => {
         return (
             <ListItem key={student.id}>
                 <Link href={`/student?id=${student.id}`}>
-                    <StudentLink href={`/student?id=${student.id}`}>
+                    <StudentLink href={`/goals?id=${student.id}`}>
                         <CircleChar>{student.firstName.charAt(0)}</CircleChar>
                         <StudentNameWrapper>
                             <span>{student.firstName}</span>

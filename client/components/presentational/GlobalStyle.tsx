@@ -22,6 +22,7 @@ h1 {
     line-height: 1.1;
     font-size: 36px;
     letter-spacing: 0;
+    font-weight: 400;
 }
 h2 {
     font-size: 28px;
@@ -51,4 +52,5 @@ label {
 button {
     cursor: pointer;
 }
+
 `;

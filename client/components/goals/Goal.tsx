@@ -35,7 +35,7 @@ const GoalNameButton = styled('button')`
             box-shadow: 0 0.4rem 1.6rem 0 rgba(31, 36, 38, 0.16);
             background: white;
             outline-style: solid;
-            outline-width: 1px;
+            outline-width: 2px;
             outline-color: ${lightBlue};
         }
     }

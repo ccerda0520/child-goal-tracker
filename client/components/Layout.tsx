@@ -2,9 +2,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import styled from 'styled-components';
+import { LogOut } from 'styled-icons/boxicons-regular/LogOut';
+import { Face } from 'styled-icons/material/Face';
+import { Gear } from 'styled-icons/octicons/Gear';
 import { MeComponent } from '../generated/apolloComponents';
 import { LabelText } from './presentational/CommonStyles';
 import GlobalStyle from './presentational/GlobalStyle';
+import { fontGray } from './presentational/variables';
 
 type Props = {
     title?: string;
@@ -32,12 +36,15 @@ const TopBarWrapper = styled('div')`
     background: #1e3054;
     z-index: 100;
 `;
-const SideBar = styled('nav')``;
+const SideBar = styled('nav')`
+    display: flex;
+    flex-direction: column;
+`;
 const SideBarWrapper = styled('div')`
     position: fixed;
     top: 70px;
     left: 0;
-    width: 75px;
+    width: 60px;
     padding: 15px;
     height: 100%;
     background: white;
@@ -47,9 +54,62 @@ const SideBarWrapper = styled('div')`
 const MainWrapper = styled('main')`
     padding: 35px 50px 50px 50px;
     margin-top: 0;
-    margin-left: 75px;
+    margin-left: 60px;
     width: 1170px;
-    max-width: 100%;
+    max-width: calc(100% - 60px);
+`;
+
+const StudentIcon = styled(Face)`
+    width: 30px;
+`;
+const LogoutIcon = styled(LogOut)`
+    margin-left: -3px;
+    width: 31px;
+`;
+const SettingsIcon = styled(Gear)`
+    width: 27px;
+    margin-left: 1px;
+`;
+
+const LinkWrapper = styled('a')`
+    position: relative;
+    display: inline-block;
+    &:not(:last-of-type) {
+        margin-bottom: 10px;
+    }
+    &:hover,
+    &:focus {
+        ${LabelText} {
+            height: auto;
+            clip: initial;
+            clip-path: initial;
+            position: absolute;
+            overflow: initial;
+            width: auto;
+            margin: 0;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            box-shadow: 0 1px 3px 0 rgba(31, 36, 38, 0.1);
+            margin-left: 5px;
+            color: ${fontGray};
+            padding: 2px 5px;
+            &:after {
+                display: inline-block;
+                content: '';
+                width: 0px;
+                height: 0px;
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+                border-right: 5px solid white;
+                position: absolute;
+                left: -5px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+    }
 `;
 
 const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the default title' }) => (
@@ -64,7 +124,7 @@ const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the
             <TopBarWrapper>
                 <TopBar>
                     <Link href="/">
-                        <a>
+                        <a href="/">
                             <LabelText isLabelVisible={false}>Logo Linking to Home Page</LabelText>
                             <LogoImg src="/static/images/logo.png" alt="Site Logo" />
                         </a>
@@ -73,18 +133,6 @@ const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the
             </TopBarWrapper>
             <SideBarWrapper>
                 <SideBar>
-                    <Link href="/">
-                        <a>Home</a>
-                    </Link>{' '}
-                    |{' '}
-                    <Link href="/about">
-                        <a>About</a>
-                    </Link>{' '}
-                    |{' '}
-                    <Link href="/login">
-                        <a>Login</a>
-                    </Link>{' '}
-                    |{' '}
                     <MeComponent>
                         {({ data, loading }) => {
                             if (!data || loading || !data.me) {
@@ -92,9 +140,26 @@ const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the
                             }
 
                             return (
-                                <Link href="/logout">
-                                    <a>Logout</a>
-                                </Link>
+                                <div>
+                                    <Link href="/">
+                                        <LinkWrapper href="/">
+                                            <StudentIcon />
+                                            <LabelText isLabelVisible={false}>Students</LabelText>
+                                        </LinkWrapper>
+                                    </Link>
+                                    <Link href="/settings">
+                                        <LinkWrapper href="/settings">
+                                            <SettingsIcon />
+                                            <LabelText isLabelVisible={false}>Settings</LabelText>
+                                        </LinkWrapper>
+                                    </Link>
+                                    <Link href="/logout">
+                                        <LinkWrapper href="/logout">
+                                            <LogoutIcon />
+                                            <LabelText isLabelVisible={false}>Logout</LabelText>
+                                        </LinkWrapper>
+                                    </Link>
+                                </div>
                             );
                         }}
                     </MeComponent>

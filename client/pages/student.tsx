@@ -1,24 +1,64 @@
+import Link from 'next/link';
 import { withRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
+import { Book } from 'styled-icons/boxicons-regular/Book';
+import { Pencil } from 'styled-icons/boxicons-regular/Pencil';
+import { Clock } from 'styled-icons/fa-regular/Clock';
 import { isArray } from 'util';
-import GoalList from '../components/goals/GoalList';
-import GoalSidebar from '../components/goals/GoalSidebar';
 import Layout from '../components/Layout';
-import { ActiveGoalProvider } from '../context/ActiveGoalContext';
-import { StudentProvider } from '../context/StudentContext';
+import { lightBlue } from '../components/presentational/variables';
+import { withAuth } from '../components/withAuth';
 import { useUser } from '../context/UserContext';
-import { useIncompleteGoalsQuery } from '../generated/apolloComponents';
 
-const StudentWrapper = styled('div')`
+const DashboardLinkContainer = styled('div')`
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
 `;
 
-const Student = withRouter((props) => {
-    const [initialLoading, setInitialLoading] = React.useState(true);
-    const [goals, setGoals] = React.useState();
+const DashboardLink = styled('a')`
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 150px;
+    height: 150px;
+    color: ${lightBlue};
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px 3px rgba(31, 36, 38, 0.1);
+    transition: all 0.3s ease-in-out;
+    &:not(:last-of-type) {
+        margin-right: 25px;
+    }
+    &:hover,
+    &:focus {
+        margin-top: -15px;
+    }
+`;
+
+const GoalsIcon = styled(Pencil)`
+    color: ${lightBlue};
+    width: 60px;
+    margin-bottom: 10px;
+`;
+const SessionIcon = styled(Clock)`
+    color: ${lightBlue};
+    width: 56px;
+    margin-bottom: 14px;
+`;
+const DatabookIcon = styled(Book)`
+    color: ${lightBlue};
+    width: 60px;
+    margin-bottom: 10px;
+`;
+
+const StudentPage = withRouter((props) => {
+    const user = useUser();
 
     const queryArgs = props.router!.query;
     if (!queryArgs || !queryArgs.id) {
@@ -28,59 +68,37 @@ const Student = withRouter((props) => {
     const queryArgsId: string = isArray(queryArgs.id) ? queryArgs.id[0] : queryArgs.id;
     const studentId: number = parseInt(queryArgsId);
 
-    // check if student ID is inside list of students assigned to user
-    const user = useUser();
-    if (!user!.students || !user!.students.length) {
-        return <Layout>No Students Assigned to User</Layout>;
-    }
+    const student = user!.students!.find((student) => parseInt(student.id) === studentId);
 
-    const student = user!.students.find((student) => parseInt(student.id) === studentId);
-    if (typeof student === 'undefined') {
-        return <Layout>No student assigned to this user with this id.</Layout>;
-    }
-
-    const { data, loading, errors } = useIncompleteGoalsQuery({
-        suspend: false,
-        fetchPolicy: 'cache-and-network',
-        variables: {
-            studentId: studentId,
-        },
-    });
-
-    if (loading) {
-        return (
-            <Layout>
-                <div>loading...</div>{' '}
-            </Layout>
-        );
-    }
-
-    if (!loading && initialLoading && !errors) {
-        setInitialLoading(false);
-        setGoals(data!.goals);
-    }
-
-    if (errors) {
-        return (
-            <Layout>
-                <div>Error loading the data, please trying refresing the page</div>
-            </Layout>
-        );
+    if (!student) {
+        return <Layout title="Student Dashboard">No Student found with the specified id.</Layout>;
     }
 
     return (
         <Layout title="Student Dashboard">
-            <StudentProvider student={student}>
-                <ActiveGoalProvider>
-                    <h1>Goals</h1>
-                    <StudentWrapper>
-                        <GoalList goals={goals} />
-                        <GoalSidebar />
-                    </StudentWrapper>
-                </ActiveGoalProvider>
-            </StudentProvider>
+            <h1>{student.firstName}'s Dashboard</h1>
+            <DashboardLinkContainer>
+                <Link href={`/goals?id=${student.id}`}>
+                    <DashboardLink href={`/goals?id=${student.id}`}>
+                        <GoalsIcon />
+                        Goals
+                    </DashboardLink>
+                </Link>
+                <Link href={`/session?id=${student.id}`}>
+                    <DashboardLink href={`/session?id=${student.id}`}>
+                        <SessionIcon />
+                        Session
+                    </DashboardLink>
+                </Link>
+                <Link href={`/databook?id=${student.id}`}>
+                    <DashboardLink href={`/databook?id=${student.id}`}>
+                        <DatabookIcon />
+                        Databook
+                    </DashboardLink>
+                </Link>
+            </DashboardLinkContainer>
         </Layout>
     );
 });
 
-export default Student;
+export default withAuth(StudentPage);

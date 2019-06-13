@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useCreateTrialMutation, useCurrentTrialQuery, useUpdateTrialMutation } from '../../generated/apolloComponents';
 import { LabelText } from '../presentational/CommonStyles';
 import { errorRed, yesGreen } from '../presentational/variables';
+import Spinner from '../Spinner';
 
 interface Props {
     initialFieldValues?: Object;
@@ -175,8 +176,6 @@ const TrialForm: React.FC<Props> = ({ trialCount, goalId }) => {
                 console.log(err);
             });
 
-            console.log(response);
-
             return;
         }
 
@@ -226,7 +225,7 @@ const TrialForm: React.FC<Props> = ({ trialCount, goalId }) => {
     );
 
     if (loading) {
-        return <div>loading...</div>;
+        return <Spinner />;
     }
 
     if (errors) {

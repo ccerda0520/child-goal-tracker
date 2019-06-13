@@ -6,7 +6,7 @@ import Goal from './Goal';
 import NewGoalForm from './NewGoalForm';
 
 const GoalGroupContainer = styled('div')`
-    padding: 25px;
+    padding: 0;
     background: white;
     border-radius: 10px;
     display: inline-block;
@@ -18,12 +18,19 @@ const H2 = styled('h2')`
     font-weight: 700;
     text-transform: uppercase;
     margin-top: 0;
+    margin-bottom: 0;
+    padding: 20px 25px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: white;
+    background: ${lightBlue};
 `;
 
 const GoalContainer = styled('ul')`
     list-style: none;
     padding: 0;
     margin: 0;
+    padding: 25px;
 `;
 
 const GoalListItem = styled('li')`

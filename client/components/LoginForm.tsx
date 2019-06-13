@@ -3,6 +3,7 @@ import Router from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 import * as Yup from 'yup';
+import { useAuth } from '../context/AuthContext';
 import { LoginComponent, MeQuery } from '../generated/apolloComponents';
 import { meQuery } from '../graphql/user/query/me';
 import InputField from './formikFields/InputField';
@@ -39,6 +40,7 @@ const LoginButton = styled(Button)`
 `;
 
 const LoginForm: React.FunctionComponent<{}> = () => {
+    const { authLogin } = useAuth();
     return (
         <LoginComponent>
             {(login) => (
@@ -58,7 +60,7 @@ const LoginForm: React.FunctionComponent<{}> = () => {
                                             return;
                                         }
 
-                                        cache.writeQuery    <MeQuery>({
+                                        cache.writeQuery<MeQuery>({
                                             query: meQuery,
                                             data: {
                                                 __typename: 'Query',
@@ -77,6 +79,7 @@ const LoginForm: React.FunctionComponent<{}> = () => {
                                     return;
                                 }
 
+                                authLogin();
                                 // Redirect user after successful login
                                 Router.push('/');
                             } catch (err) {

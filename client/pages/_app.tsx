@@ -2,6 +2,7 @@ import App, { Container } from 'next/app';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
+import { AuthProvider } from '../context/AuthContext';
 import { UserProvider } from '../context/UserContext';
 import withApollo from '../lib/withApollo';
 
@@ -12,9 +13,11 @@ class MyApp extends App<any> {
             <Container>
                 <ApolloProvider client={apolloClient}>
                     <ApolloHooksProvider client={apolloClient}>
-                        <UserProvider>
-                            <Component {...pageProps} />
-                        </UserProvider>
+                        <AuthProvider>
+                            <UserProvider>
+                                <Component {...pageProps} />
+                            </UserProvider>
+                        </AuthProvider>
                     </ApolloHooksProvider>
                 </ApolloProvider>
             </Container>
