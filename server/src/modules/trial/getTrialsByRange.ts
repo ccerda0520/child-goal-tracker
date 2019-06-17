@@ -5,7 +5,7 @@ import { isAuth } from '../middleware/isAuth';
 import { isGoalOwnedByUser } from '../middleware/isGoalOwnedByUser';
 import { GetTrialsByRangeInput } from './getTrialsByRange/getTrialsByRangeInput';
 
-@Resolver()
+@Resolver(Trial)
 export class GetTrialsByRangeResolver {
     @UseMiddleware([isAuth, isGoalOwnedByUser])
     @Query((returns) => [Trial], { nullable: true })

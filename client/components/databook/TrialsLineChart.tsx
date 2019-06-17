@@ -1,13 +1,24 @@
 import React from 'react';
-import { VictoryChart, VictoryContainer, VictoryLine, VictoryTheme } from 'victory';
+import styled from 'styled-components';
+import { VictoryAxis, VictoryChart, VictoryContainer, VictoryLine, VictoryScatter, VictoryTheme } from 'victory';
 import { useGetTrialsByRangeQuery } from '../../generated/apolloComponents';
+import { lightBlue } from '../presentational/variables';
 import Spinner from '../Spinner';
 
 interface Props {
-    goalId: number;
+    goalId: string;
     from: Date;
     to: Date;
 }
+
+const ChartWrapper = styled('div')`
+    width: auto;
+    padding: 1em;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px 0 rgba(31, 36, 38, 0.1);
+    margin-left: 35px;
+`;
 
 const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
     const { data, loading, errors } = useGetTrialsByRangeQuery({
@@ -15,7 +26,7 @@ const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
         fetchPolicy: 'cache-and-network',
         variables: {
             data: {
-                goalId: goalId,
+                goalId: parseInt(goalId),
                 start: from,
                 end: to,
             },
@@ -26,30 +37,101 @@ const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
         return <Spinner />;
     }
 
-    if (errors) {
+    if (errors || data === undefined) {
         return <div>Issues loading goal trials. Please try refreshing the page.</div>;
     }
 
-    if (!data!.getTrialsByRange) {
+    if (!data!.getTrialsByRange!.length || data!.getTrialsByRange === null) {
         return <div>No trials found for this student during this date range.</div>;
     }
-
+    console.log(data);
+    const trialsPerDay = data!.getTrialsByRange[0].goal.trialsPerDay;
+    let dataPoints: any = [];
+    data!.getTrialsByRange.forEach((trial, index) => {
+        const date = new Date(trial.createdAt);
+        const month = date.getMonth();
+        const day = date.getDate();
+        const xValue = {
+            value: index + 1,
+            label: month + 1 + '/' + day,
+        };
+        const yValue = trial.trialData.filter((val) => val === true).length / trial.goal.trialsPerDay;
+        dataPoints.push({ x: xValue.label, y: yValue });
+        console.log(dataPoints);
+    });
     return (
-        <div>
+        <ChartWrapper>
             <VictoryChart
                 theme={VictoryTheme.material}
-                animate={{ duration: 2000 }}
+                animate={{ duration: 1000 }}
                 containerComponent={<VictoryContainer title="Chart" desc="This is a chart" />}
+                height={325}
             >
+                <VictoryAxis />
+                <VictoryAxis dependentAxis domain={[0, 1]} tickValues={[0, 0.2, 0.4, 0.6, 0.8, 1]} tickFormat={(t) => `${t * 100}%`} />
                 <VictoryLine
                     style={{
-                        data: { stroke: '#c43a31' },
+                        data: {
+                            stroke: lightBlue,
+                        },
                         parent: { border: '1px solid #ccc' },
                     }}
-                    data={[{ x: 1, y: 2 }, { x: 2, y: 3 }, { x: 3, y: 5 }, { x: 4, y: 4 }, { x: 5, y: 7 }]}
+                    data={dataPoints}
+                />
+                <VictoryScatter
+                    data={dataPoints}
+                    size={9}
+                    labels={(datum) => ''}
+                    events={[
+                        {
+                            target: 'data',
+                            eventHandlers: {
+                                onMouseOver: () => {
+                                    return [
+                                        {
+                                            target: 'data',
+                                            mutation: (props) => {
+                                                const fill = props.style && props.style.fill;
+                                                return fill === 'black' ? null : { style: { fill: 'black' } };
+                                            },
+                                        },
+                                        {
+                                            target: 'labels',
+                                            mutation: (props) => {
+                                                console.log(props);
+                                                return {
+                                                    text: `${props.datum.y * trialsPerDay} / ${trialsPerDay}`,
+                                                };
+                                            },
+                                        },
+                                    ];
+                                },
+                                onMouseOut: () => {
+                                    return [
+                                        {
+                                            target: 'data',
+                                            mutation: (props) => {
+                                                const fill = props.style && props.style.fill;
+                                                return fill === 'black' ? null : { style: { fill: 'black' } };
+                                            },
+                                        },
+                                        {
+                                            target: 'labels',
+                                            mutation: (props) => {
+                                                console.log(props);
+                                                return {
+                                                    text: '',
+                                                };
+                                            },
+                                        },
+                                    ];
+                                },
+                            },
+                        },
+                    ]}
                 />
             </VictoryChart>
-        </div>
+        </ChartWrapper>
     );
 };
 

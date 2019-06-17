@@ -241,7 +241,10 @@ export type GetTrialsByRangeQueryVariables = {
 export type GetTrialsByRangeQuery = { __typename?: "Query" } & {
   getTrialsByRange: Maybe<
     Array<
-      { __typename?: "Trial" } & Pick<Trial, "id" | "trialData" | "createdAt">
+      { __typename?: "Trial" } & Pick<
+        Trial,
+        "id" | "trialData" | "createdAt"
+      > & { goal: { __typename?: "Goal" } & Pick<Goal, "trialsPerDay"> }
     >
   >;
 };
@@ -653,6 +656,9 @@ export const GetTrialsByRangeDocument = gql`
       id
       trialData
       createdAt
+      goal {
+        trialsPerDay
+      }
     }
   }
 `;

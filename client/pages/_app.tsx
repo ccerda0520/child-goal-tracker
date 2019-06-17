@@ -5,6 +5,7 @@ import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 import { AuthProvider } from '../context/AuthContext';
 import { UserProvider } from '../context/UserContext';
 import withApollo from '../lib/withApollo';
+import '../static/css/app.css';
 
 class MyApp extends App<any> {
     render() {

@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import { withRouter } from 'next/router';
 import React from 'react';
 import DayPicker from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
+import styled from 'styled-components';
 import { isArray } from 'util';
 import GoalsDropdown from '../components/databook/GoalsDropdown';
 import TrialsDateRangePicker from '../components/databook/TrialsDateRangePicker';
@@ -16,8 +16,21 @@ interface State {
     from: Date | undefined;
     to: Date | undefined;
     showDatePicker: boolean;
-    activeGoalId: number | undefined;
+    activeGoalId: string | undefined;
 }
+
+const DataWrapper = styled('div')`
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+`;
+const SelectionWrapper = styled('div')`
+    width: 280px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px 0 rgba(31, 36, 38, 0.1);
+    padding-bottom: 3px;
+`;
 
 const initialState: State = {
     from: undefined,
@@ -77,10 +90,10 @@ const Databook = withRouter((props) => {
     }, []);
 
     const handleGoalsDropdownChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (id: string) => {
             dispatch({
                 type: 'changeGoalId',
-                activeGoalId: parseInt(e.target.value),
+                activeGoalId: id,
             });
         },
         [state.activeGoalId],
@@ -108,10 +121,14 @@ const Databook = withRouter((props) => {
     return (
         <Layout title="Student Databook">
             <h1>{student.firstName}'s Databook</h1>
-            <GoalsDropdown studentId={parseInt(student.id)} goalId={state.activeGoalId} onChange={handleGoalsDropdownChange} />
-            <TrialsDateRangePicker from={state.from} to={state.to} onDayClick={handleDayClick} onResetClick={handleResetClick} />
+            <DataWrapper>
+                <SelectionWrapper>
+                    <GoalsDropdown studentId={parseInt(student.id)} goalId={state.activeGoalId} onChange={handleGoalsDropdownChange} />
+                    <TrialsDateRangePicker from={state.from} to={state.to} onDayClick={handleDayClick} onResetClick={handleResetClick} />
+                </SelectionWrapper>
 
-            {state.from && state.to && state.activeGoalId && <TrialsLineChart from={state.from} to={state.to} goalId={state.activeGoalId} />}
+                {state.from && state.to && state.activeGoalId && <TrialsLineChart from={state.from} to={state.to} goalId={state.activeGoalId} />}
+            </DataWrapper>
         </Layout>
     );
 });

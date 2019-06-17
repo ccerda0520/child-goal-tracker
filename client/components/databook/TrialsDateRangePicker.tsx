@@ -1,9 +1,9 @@
 import React from 'react';
 import DayPicker from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 import styled from 'styled-components';
 
 const DatePickerWrapper = styled('div')`
-    width: 280px;
     .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
         background-color: #f0f8ff !important;
         color: #4a90e2;
@@ -21,6 +21,10 @@ const DatePickerWrapper = styled('div')`
     }
 `;
 
+const DatePickerDescription = styled('p')`
+    margin: 1em 1em 0 1em;
+`;
+
 interface Props {
     from: any;
     to: any;
@@ -32,8 +36,8 @@ const TrialsDateRangePicker: React.FC<Props> = ({ from, to, onResetClick, onDayC
     const modifiers = { start: from, end: to };
     return (
         <div>
-            <p>
-                {!from && !to && 'Please select the first day.'}
+            <DatePickerDescription>
+                {/* {!from && !to && 'Please select the first day.'}
                 {from && !to && 'Please select the last day.'}
                 {from &&
                     to &&
@@ -43,8 +47,8 @@ const TrialsDateRangePicker: React.FC<Props> = ({ from, to, onResetClick, onDayC
                     <button className="link" onClick={onResetClick}>
                         Reset
                     </button>
-                )}
-            </p>
+                )} */}
+            </DatePickerDescription>
             <DatePickerWrapper>
                 <DayPicker numberOfMonths={1} selectedDays={[from, { from, to }]} modifiers={modifiers} onDayClick={onDayClick} />
             </DatePickerWrapper>

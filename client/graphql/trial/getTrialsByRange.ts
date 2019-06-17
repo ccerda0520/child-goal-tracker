@@ -6,6 +6,9 @@ export const getTrialsByRangeQuery = gql`
             id
             trialData
             createdAt
+            goal {
+                trialsPerDay
+            }
         }
     }
 `;

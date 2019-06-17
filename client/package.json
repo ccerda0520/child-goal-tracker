@@ -9,6 +9,7 @@
         "generate": "graphql-codegen --config codegen.yml"
     },
     "dependencies": {
+        "@reach/menu-button": "^0.1.18",
         "@zeit/next-css": "^1.0.1",
         "@zeit/next-typescript": "^1.1.1",
         "apollo-boost": "^0.3.1",
