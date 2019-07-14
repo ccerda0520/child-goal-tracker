@@ -1,8 +1,10 @@
 import { UserInputError } from 'apollo-server-core';
+import { DateTime } from 'luxon';
 import { Arg, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import { Between } from 'typeorm';
 import { Goal } from '../../entity/goal';
 import { Trial } from '../../entity/trial';
+import { User } from '../../entity/User';
 import { isAuth } from '../middleware/isAuth';
 import { isGoalOwnedByUser } from '../middleware/isGoalOwnedByUser';
 import { CreateTrialInput } from './createTrial/createTrialInput';
@@ -16,27 +18,32 @@ export class CreateTrialResolver {
         trialData,
         goalId,
     }: CreateTrialInput): Promise<Trial> {
-        const goal = await Goal.findOne(goalId);
+        const goal = await Goal.findOne({
+            relations: ['student'],
+            where: {
+                id: goalId,
+            },
+        });
 
         if (!goal) {
             throw new UserInputError('No Goal exists with given goalId.');
         }
+
+        const user = await User.findOne(goal.student.userId);
+
         if (trialData.length > goal.trialsPerDay) {
             throw new UserInputError('Argument trialData has more trial entries than goal allows.');
         }
 
         // const start = moment.utc().startOf('day');
         // const end = moment.utc().endOf('day');
-        const start = new Date();
-        start.setHours(0, 0, 0, 0);
-        const end = new Date();
-        end.setHours(23, 59, 59, 59);
+        const date = DateTime.utc();
 
         const trial = await Trial.findOne({
             relations: ['goal'],
             where: {
                 goalId: goalId,
-                createdAt: Between(start, end),
+                createdAt: Between(date.startOf('day').setZone(user!.timeZone), date.endOf('day').setZone(user!.timeZone)),
             },
         });
 
@@ -47,6 +54,7 @@ export class CreateTrialResolver {
         return await Trial.create({
             trialData,
             goalId,
+            createdAt: date,
         }).save();
     }
 }
