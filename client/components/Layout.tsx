@@ -14,37 +14,22 @@ type Props = {
     title?: string;
 };
 
-const Header = styled('header')`
-    height: 70px;
-`;
+const Header = styled('header')``;
 
 const LogoImg = styled('img')`
     height: 35px;
 `;
-const TopBar = styled('nav')`
-    width: 1270px;
-    padding: 15px;
-    margin: 0 auto 0 0;
-    max-width: 100%;
-    height: 70px;
-`;
-const TopBarWrapper = styled('div')`
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: #1e3054;
-    z-index: 100;
-`;
 const SideBar = styled('nav')`
     display: flex;
     flex-direction: column;
+    text-align: center;
+    margin-top: 20px;
 `;
 const SideBarWrapper = styled('div')`
     position: fixed;
-    top: 70px;
+    top: 0ff;
     left: 0;
-    width: 60px;
+    width: 65px;
     padding: 15px;
     height: 100%;
     background: white;
@@ -112,6 +97,10 @@ const LinkWrapper = styled('a')`
     }
 `;
 
+const IconLinks = styled('div')`
+    margin-top: 20px;
+`;
+
 const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the default title' }) => (
     <div>
         <Head>
@@ -121,44 +110,51 @@ const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the
         </Head>
         <GlobalStyle />
         <Header>
-            <TopBarWrapper>
-                <TopBar>
-                    <Link href="/">
-                        <a href="/">
-                            <LabelText isLabelVisible={false}>Logo Linking to Home Page</LabelText>
-                            <LogoImg src="/static/images/logo.png" alt="Site Logo" />
-                        </a>
-                    </Link>
-                </TopBar>
-            </TopBarWrapper>
             <SideBarWrapper>
                 <SideBar>
                     <MeComponent>
                         {({ data, loading }) => {
                             if (!data || loading || !data.me) {
-                                return null;
+                                return (
+                                    <div>
+                                        <Link href="/">
+                                            <a href="/">
+                                                <LabelText isLabelVisible={false}>Logo Linking to Home Page</LabelText>
+                                                <LogoImg src="/static/images/logo.png" alt="Site Logo" />
+                                            </a>
+                                        </Link>
+                                    </div>
+                                );
                             }
 
                             return (
                                 <div>
                                     <Link href="/">
-                                        <LinkWrapper href="/">
-                                            <StudentIcon />
-                                            <LabelText isLabelVisible={false}>Students</LabelText>
-                                        </LinkWrapper>
+                                        <a href="/">
+                                            <LabelText isLabelVisible={false}>Logo Linking to Home Page</LabelText>
+                                            <LogoImg src="/static/images/logo.png" alt="Site Logo" />
+                                        </a>
                                     </Link>
-                                    <Link href="/settings">
-                                        <LinkWrapper href="/settings">
-                                            <SettingsIcon />
-                                            <LabelText isLabelVisible={false}>Settings</LabelText>
-                                        </LinkWrapper>
-                                    </Link>
-                                    <Link href="/logout">
-                                        <LinkWrapper href="/logout">
-                                            <LogoutIcon />
-                                            <LabelText isLabelVisible={false}>Logout</LabelText>
-                                        </LinkWrapper>
-                                    </Link>
+                                    <IconLinks>
+                                        <Link href="/">
+                                            <LinkWrapper href="/">
+                                                <StudentIcon />
+                                                <LabelText isLabelVisible={false}>Students</LabelText>
+                                            </LinkWrapper>
+                                        </Link>
+                                        <Link href="/settings">
+                                            <LinkWrapper href="/settings">
+                                                <SettingsIcon />
+                                                <LabelText isLabelVisible={false}>Settings</LabelText>
+                                            </LinkWrapper>
+                                        </Link>
+                                        <Link href="/logout">
+                                            <LinkWrapper href="/logout">
+                                                <LogoutIcon />
+                                                <LabelText isLabelVisible={false}>Logout</LabelText>
+                                            </LinkWrapper>
+                                        </Link>
+                                    </IconLinks>
                                 </div>
                             );
                         }}

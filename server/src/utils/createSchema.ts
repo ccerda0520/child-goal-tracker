@@ -15,6 +15,7 @@ import { LoginResolver } from '../modules/user/login';
 import { LogoutResolver } from '../modules/user/logout';
 import { MeResolver } from '../modules/user/me';
 import { RegisterResolver } from '../modules/user/register';
+import { UpdateUserResolver } from '../modules/user/updateUser';
 
 export const createSchema = async () => {
     return await buildSchema({
@@ -27,6 +28,7 @@ export const createSchema = async () => {
             LogoutResolver,
             MeResolver,
             RegisterResolver,
+            UpdateUserResolver,
             //Student Resolvers
             CreateStudentResolver,
             // Goal Resolvers

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MeQuery } from '../generated/apolloComponents';
 import { meQuery } from '../graphql/user/query/me';
 import redirect from '../lib/redirect';
-import { NextContextWithApollo } from '../types/NextContextWithApollo';
+import { NextContextWithApollo } from '../types/nextContextWithApollo';
 
 export const withAuth = <T extends object>(C: React.ComponentClass<T> | React.FunctionComponent<T>) => {
     return class AuthComponent extends React.Component<T> {

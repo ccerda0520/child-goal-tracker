@@ -45,7 +45,7 @@ const AuthProvider = (props: any) => {
     });
 
     // Use the useAsync hook with useeffect in order to fetch a user, but only once
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         if (isSettled) {
             setFirstAttemptFinished(true);
         }

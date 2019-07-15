@@ -41,32 +41,22 @@ export default () => {
         <Layout title="Login">
             <PageWrapper>
                 {currentForm === 'login' && <LoginForm />}
-                {currentForm === 'register' && (
-                    <div>
-                        <h2>Register</h2>
-                        <RegisterForm />
-                    </div>
-                )}
-                {currentForm === 'forgot' && (
-                    <div>
-                        <h2>Forgot Password</h2>
-                        <ForgotPasswordForm />
-                    </div>
-                )}
+                {currentForm === 'register' && <RegisterForm />}
+                {currentForm === 'forgot' && <ForgotPasswordForm />}
                 <ButtonLinksWrapper>
                     {currentForm !== 'login' && (
                         <ButtonLink type="button" onClick={() => setCurrentForm('login')}>
                             Login
                         </ButtonLink>
                     )}
-                    {currentForm !== 'forgot' && (
-                        <ButtonLink type="button" onClick={() => setCurrentForm('forgot')}>
-                            Forgot Password?
-                        </ButtonLink>
-                    )}
                     {currentForm !== 'register' && (
                         <ButtonLink type="button" onClick={() => setCurrentForm('register')}>
                             Register Now
+                        </ButtonLink>
+                    )}
+                    {currentForm !== 'forgot' && (
+                        <ButtonLink type="button" onClick={() => setCurrentForm('forgot')}>
+                            Forgot Password?
                         </ButtonLink>
                     )}
                 </ButtonLinksWrapper>

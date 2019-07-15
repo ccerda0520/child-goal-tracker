@@ -63,6 +63,7 @@ export type Mutation = {
   login?: Maybe<User>;
   logout: Scalars["Boolean"];
   register: User;
+  updateUser?: Maybe<Scalars["Boolean"]>;
 };
 
 export type MutationCreateGoalArgs = {
@@ -100,6 +101,10 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   data: RegisterInput;
+};
+
+export type MutationUpdateUserArgs = {
+  data: UpdateUserInput;
 };
 
 export type PasswordInput = {
@@ -140,6 +145,7 @@ export type RegisterInput = {
   email: Scalars["String"];
   firstName: Scalars["String"];
   lastName: Scalars["String"];
+  timeZone: Scalars["String"];
 };
 
 export type Student = {
@@ -164,11 +170,19 @@ export type UpdateTrialInput = {
   id: Scalars["Float"];
 };
 
+export type UpdateUserInput = {
+  firstName: Scalars["String"];
+  lastName: Scalars["String"];
+  timeZone: Scalars["String"];
+  password?: Maybe<Scalars["String"]>;
+};
+
 export type User = {
   id: Scalars["ID"];
   email: Scalars["String"];
   firstName: Scalars["String"];
   lastName: Scalars["String"];
+  timeZone: Scalars["String"];
   roles: Array<Scalars["String"]>;
   students?: Maybe<Array<Student>>;
 };
@@ -312,21 +326,33 @@ export type RegisterMutationVariables = {
 export type RegisterMutation = { __typename?: "Mutation" } & {
   register: { __typename?: "User" } & Pick<
     User,
-    "id" | "firstName" | "lastName" | "email"
+    "id" | "firstName" | "lastName" | "email" | "timeZone"
   >;
 };
+
+export type UpdateUserMutationVariables = {
+  data: UpdateUserInput;
+};
+
+export type UpdateUserMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "updateUser"
+>;
 
 export type MeQueryVariables = {};
 
 export type MeQuery = { __typename?: "Query" } & {
-  me: Maybe<{ __typename?: "User" } & Pick<User, "email" | "id">>;
+  me: Maybe<{ __typename?: "User" } & Pick<User, "email" | "id" | "timeZone">>;
 };
 
 export type MeStudentsQueryVariables = {};
 
 export type MeStudentsQuery = { __typename?: "Query" } & {
   me: Maybe<
-    { __typename?: "User" } & Pick<User, "email" | "id"> & {
+    { __typename?: "User" } & Pick<
+      User,
+      "email" | "firstName" | "lastName" | "id" | "timeZone"
+    > & {
         students: Maybe<
           Array<
             { __typename?: "Student" } & Pick<
@@ -1101,6 +1127,7 @@ export const RegisterDocument = gql`
       firstName
       lastName
       email
+      timeZone
     }
   }
 `;
@@ -1158,11 +1185,74 @@ export function useRegisterMutation(
     RegisterMutationVariables
   >(RegisterDocument, baseOptions);
 }
+export const UpdateUserDocument = gql`
+  mutation UpdateUser($data: UpdateUserInput!) {
+    updateUser(data: $data)
+  }
+`;
+export type UpdateUserMutationFn = ReactApollo.MutationFn<
+  UpdateUserMutation,
+  UpdateUserMutationVariables
+>;
+
+export const UpdateUserComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        UpdateUserMutation,
+        UpdateUserMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: UpdateUserMutationVariables }
+) => (
+  <ReactApollo.Mutation<UpdateUserMutation, UpdateUserMutationVariables>
+    mutation={UpdateUserDocument}
+    {...props}
+  />
+);
+
+export type UpdateUserProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<UpdateUserMutation, UpdateUserMutationVariables>
+> &
+  TChildProps;
+export function withUpdateUser<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    UpdateUserMutation,
+    UpdateUserMutationVariables,
+    UpdateUserProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    UpdateUserMutation,
+    UpdateUserMutationVariables,
+    UpdateUserProps<TChildProps>
+  >(UpdateUserDocument, {
+    alias: "withUpdateUser",
+    ...operationOptions
+  });
+}
+
+export function useUpdateUserMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    UpdateUserMutation,
+    UpdateUserMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    UpdateUserMutation,
+    UpdateUserMutationVariables
+  >(UpdateUserDocument, baseOptions);
+}
 export const MeDocument = gql`
   query Me {
     me {
       email
       id
+      timeZone
     }
   }
 `;
@@ -1211,12 +1301,15 @@ export const MeStudentsDocument = gql`
   query MeStudents {
     me {
       email
+      firstName
+      lastName
       id
       students {
         firstName
         lastName
         id
       }
+      timeZone
     }
   }
 `;

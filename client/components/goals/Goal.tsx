@@ -14,7 +14,7 @@ const GoalNameButton = styled('button')`
     margin: 0;
     background: white;
     border: 0;
-    padding: 15px 0;
+    padding: 15px 25px;
     position: relative;
     &:before {
         display: block;

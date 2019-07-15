@@ -6,6 +6,7 @@ import { useStudent } from '../../context/StudentContext';
 import { useCreateGoalMutation } from '../../generated/apolloComponents';
 import InputField, { TextAreaField } from '../formikFields/InputField';
 import { Button, Error } from '../presentational/CommonStyles';
+import { lightBlue } from '../presentational/variables';
 
 const newGoalValidationSchema = Yup.object().shape({
     goalName: Yup.string().required('Goal Name is required'),
@@ -41,6 +42,11 @@ const CancelButton = styled(Button)`
     margin-left: 10px;
 `;
 
+const FormWrapper = styled('div')`
+    padding: 0 25px 15px 25px;
+    border-top: 2px solid ${lightBlue};
+`;
+
 interface Props {
     onCancel: any;
     category: string;
@@ -51,7 +57,7 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSub
     const student = useStudent();
     const createGoal = useCreateGoalMutation();
     return (
-        <div>
+        <FormWrapper>
             <Formik
                 validationSchema={newGoalValidationSchema}
                 onSubmit={async (values, { setSubmitting, setErrors }) => {
@@ -62,7 +68,7 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSub
                             data: {
                                 name: goalName,
                                 description: goalDescription,
-                                trialsPerDay: parseInt(goalTrialsPerDay),
+                                trialsPerDay: 5,
                                 category: category,
                                 studentId: parseFloat(student.id),
                             },
@@ -88,8 +94,9 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSub
                 {({ errors, isSubmitting, handleSubmit }) => (
                     <Form onSubmit={handleSubmit}>
                         <h4>Create New Goal</h4>
-                        <TwoComponentRowWrapper>
-                            <Field name="goalName" placeholder="Goal Name" type="text" label="Goal Name" isLabelVisible={false} component={InputField} />
+                        <Field name="goalName" placeholder="Goal Name" type="text" label="Goal Name" isLabelVisible={false} component={InputField} />
+
+                        {/* <TwoComponentRowWrapper>
                             <Field
                                 name="goalTrialsPerDay"
                                 placeholder="Trials Per Day"
@@ -99,7 +106,7 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSub
                                 isLabelVisible={false}
                                 component={InputField}
                             />
-                        </TwoComponentRowWrapper>
+                        </TwoComponentRowWrapper> */}
                         <Field
                             name="goalDescription"
                             placeholder="Goal Description"
@@ -118,7 +125,7 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSub
                     </Form>
                 )}
             </Formik>
-        </div>
+        </FormWrapper>
     );
 };
 

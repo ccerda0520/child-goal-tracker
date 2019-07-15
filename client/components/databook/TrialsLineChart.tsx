@@ -20,6 +20,10 @@ const ChartWrapper = styled('div')`
     margin-left: 35px;
 `;
 
+const ChartTitle = styled('h3')`
+    text-align: center;
+`;
+
 const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
     const { data, loading, errors } = useGetTrialsByRangeQuery({
         suspend: false,
@@ -44,7 +48,7 @@ const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
     if (!data!.getTrialsByRange!.length || data!.getTrialsByRange === null) {
         return <div>No trials found for this student during this date range.</div>;
     }
-    console.log(data);
+
     const trialsPerDay = data!.getTrialsByRange[0].goal.trialsPerDay;
     let dataPoints: any = [];
     data!.getTrialsByRange.forEach((trial, index) => {
@@ -61,14 +65,32 @@ const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
     });
     return (
         <ChartWrapper>
+            <ChartTitle>Trial Success Rate</ChartTitle>
             <VictoryChart
                 theme={VictoryTheme.material}
                 animate={{ duration: 1000 }}
                 containerComponent={<VictoryContainer title="Chart" desc="This is a chart" />}
-                height={325}
+                height={400}
+                width={720}
             >
-                <VictoryAxis />
-                <VictoryAxis dependentAxis domain={[0, 1]} tickValues={[0, 0.2, 0.4, 0.6, 0.8, 1]} tickFormat={(t) => `${t * 100}%`} />
+                <VictoryAxis
+                    style={{
+                        tickLabels: {
+                            fontSize: 15,
+                        },
+                    }}
+                />
+                <VictoryAxis
+                    style={{
+                        tickLabels: {
+                            fontSize: 15,
+                        },
+                    }}
+                    dependentAxis
+                    domain={[0, 1]}
+                    tickValues={[0, 0.2, 0.4, 0.6, 0.8, 1]}
+                    tickFormat={(t) => `${t * 100}%`}
+                />
                 <VictoryLine
                     style={{
                         data: {
@@ -81,6 +103,13 @@ const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
                 <VictoryScatter
                     data={dataPoints}
                     size={9}
+                    style={{
+                        labels: {
+                            fontSize: 15,
+                            padding: 15,
+                            backgroundColor: 'red',
+                        },
+                    }}
                     labels={(datum) => ''}
                     events={[
                         {
@@ -98,9 +127,8 @@ const TrialsLineChart: React.FC<Props> = ({ goalId, from, to }) => {
                                         {
                                             target: 'labels',
                                             mutation: (props) => {
-                                                console.log(props);
                                                 return {
-                                                    text: `${props.datum.y * trialsPerDay} / ${trialsPerDay}`,
+                                                    text: `${props.datum.y * trialsPerDay} / ${trialsPerDay} passed`,
                                                 };
                                             },
                                         },

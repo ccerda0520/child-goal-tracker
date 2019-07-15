@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const registerMutation = gql`
     mutation Register($data: RegisterInput!) {
@@ -7,6 +7,7 @@ export const registerMutation = gql`
             firstName
             lastName
             email
+            timeZone
         }
     }
 `;

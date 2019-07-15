@@ -1,11 +1,12 @@
+import '@reach/menu-button/styles.css';
 import App, { Container } from 'next/app';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
+import 'react-day-picker/lib/style.css';
 import { AuthProvider } from '../context/AuthContext';
 import { UserProvider } from '../context/UserContext';
 import withApollo from '../lib/withApollo';
-import '../static/css/app.css';
 
 class MyApp extends App<any> {
     render() {

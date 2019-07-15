@@ -50,6 +50,9 @@ label {
     width: 100%;
 }
 button {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-size: 15px;
     cursor: pointer;
 }
 

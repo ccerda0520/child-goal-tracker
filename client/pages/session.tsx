@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { withRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
@@ -11,7 +12,6 @@ import { ActiveGoalProvider } from '../context/ActiveGoalContext';
 import { StudentProvider } from '../context/StudentContext';
 import { useUser } from '../context/UserContext';
 import { useIncompleteGoalsQuery } from '../generated/apolloComponents';
-import { getMonthString } from '../helpers/date';
 const SessionWrapper = styled('div')`
     display: flex;
     flex-direction: row;
@@ -19,11 +19,12 @@ const SessionWrapper = styled('div')`
 `;
 
 const Session = withRouter((props) => {
+    const user = useUser();
     const [initialLoading, setInitialLoading] = React.useState(true);
     const today = React.useMemo(() => {
-        const today = new Date();
-        const month = getMonthString(today.getMonth());
-        const day = today.getDate();
+        const today = DateTime.local().setZone(user!.timeZone);
+        const month = today.monthLong;
+        const day = today.day;
 
         return {
             month,
@@ -42,7 +43,6 @@ const Session = withRouter((props) => {
     const studentId: number = parseInt(queryArgsId);
 
     // check if student ID is inside list of students assigned to user
-    const user = useUser();
     if (!user!.students || !user!.students.length) {
         return <Layout>No Students Assigned to User</Layout>;
     }

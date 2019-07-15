@@ -55,19 +55,28 @@ interface LabelTextProps {
 }
 
 const LabelText = styled('span')`
-    border: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : 0)};
-    clip: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : 'rect(1px, 1px, 1px, 1px)')};
-    clip-path: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : 'inset(50%)')};
-    height: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : '1px')};
-    margin: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : '-1px')};
-    overflow: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : 'hidden')};
-    padding: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : 0)};
-    position: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : 'absolute')};
-    width: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : '1px')};
-    word-wrap: ${(props: LabelTextProps) => (props.isLabelVisible ? 'inherit' : 'normal !important')};
+    border: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : 0)};
+    clip: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : 'rect(1px, 1px, 1px, 1px)')};
+    clip-path: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : 'inset(50%)')};
+    height: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : '1px')};
+    margin: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : '-1px')};
+    overflow: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : 'hidden')};
+    padding: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : 0)};
+    position: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : 'absolute')};
+    width: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : '1px')};
+    word-wrap: ${(props: LabelTextProps) => (props.isLabelVisible ? 'initial' : 'normal !important')};
+    display: ${(props: LabelTextProps) => (props.isLabelVisible ? 'block' : 'initial')};
+    margin-bottom: ${(props: LabelTextProps) => (props.isLabelVisible ? '5px' : 'initial')};
 `;
 
-const InputField: React.FunctionComponent<FieldProps & InputProps & CustomProps> = ({ field, form: { errors, touched }, label, isLabelVisible, ...props }) => {
+const InputField: React.FunctionComponent<FieldProps & InputProps & CustomProps> = ({
+    field,
+    form: { errors, touched },
+    label,
+    isLabelVisible,
+    ref,
+    ...props
+}) => {
     return (
         <InputFieldWrapper>
             <label>
@@ -84,13 +93,13 @@ export const TextAreaField: React.FunctionComponent<FieldProps & InputProps & Cu
     form: { errors, touched },
     label,
     isLabelVisible,
-    ...props
+    placeholder,
 }) => {
     return (
         <InputFieldWrapper>
             <label>
                 <LabelText isLabelVisible={!!isLabelVisible}>{label}</LabelText>
-                <TextArea {...field} {...props} />
+                <TextArea {...field} placeholder={placeholder} />
                 {touched[field.name] && errors[field.name] && <Error>{errors[field.name]}</Error>}
             </label>
         </InputFieldWrapper>

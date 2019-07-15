@@ -1,9 +1,8 @@
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
-import '@reach/menu-button/styles.css';
 import React from 'react';
 import styled from 'styled-components';
 import { useGoalsQuery } from '../../generated/apolloComponents';
-import { borderGray } from '../presentational/variables';
+import { borderGray, lightBlue } from '../presentational/variables';
 import Spinner from '../Spinner';
 
 const MenuWrapper = styled('div')`
@@ -18,6 +17,18 @@ const MenuWrapper = styled('div')`
         span {
             float: right;
         }
+    }
+`;
+
+const GoalMenuList = styled(MenuList)`
+    padding: 0;
+    width: 280px;
+    [data-reach-menu-item] {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+    [data-reach-menu-item][data-selected] {
+        background: ${lightBlue};
     }
 `;
 
@@ -47,19 +58,28 @@ const GoalsDropdown: React.FC<Props> = ({ studentId, goalId, onChange }) => {
     if (!data!.goals) {
         return <div>No goals found for this student.</div>;
     }
-    console.log(data!.goals);
     const activeGoal = goalId ? data!.goals.find((e) => e.id === goalId) : null;
+    const sortedGoals = data!.goals.sort((a, b) => {
+        if (a.category < b.category) {
+            return -1;
+        }
+        if (a.category > b.category) {
+            return 1;
+        }
+        return 0;
+    });
+    console.log(sortedGoals);
     return (
         <label aria-label={'Please select a goal:'}>
             <MenuWrapper>
                 <Menu>
                     <MenuButton>
-                        {activeGoal ? activeGoal.name : 'Please Select a goal:'}
+                        {activeGoal ? activeGoal.name : 'Please select a goal to track:'}
                         <span aria-hidden>▾</span>
                     </MenuButton>
 
-                    <MenuList style={{ width: '280px' }}>
-                        {data!.goals.map((goal) => (
+                    <GoalMenuList>
+                        {sortedGoals.map((goal) => (
                             <MenuItem
                                 key={goal.id}
                                 onSelect={() => {
@@ -69,7 +89,7 @@ const GoalsDropdown: React.FC<Props> = ({ studentId, goalId, onChange }) => {
                                 <span>{goal.name}</span>
                             </MenuItem>
                         ))}
-                    </MenuList>
+                    </GoalMenuList>
                 </Menu>
             </MenuWrapper>
         </label>

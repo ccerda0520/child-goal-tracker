@@ -30,15 +30,19 @@ const GoalContainer = styled('ul')`
     list-style: none;
     padding: 0;
     margin: 0;
-    padding: 25px;
+    padding: 0;
 `;
 
 const GoalListItem = styled('li')`
     padding: 0;
-    border-top: 2px solid #337abb;
+    border-top: 2px solid ${lightBlue};
     font-size: 17px;
     &:last-of-type {
         padding-bottom: 0;
+        button {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
     }
 `;
 
@@ -69,7 +73,7 @@ const NewGoalToggleButtonLabel = styled('h3')`
 const NewGoalToggleButton = styled('button')`
     background: transparent;
     border: 0;
-    padding: 0;
+    padding: 0 25px 15px 25px;
     display: flex;
     flex-direction: row;
     align-items: center;

@@ -98,6 +98,22 @@ const RadioLabel = styled('label')`
     }
 `;
 
+const RadioWrapper = styled('div')`
+    &.disabled {
+        position: relative;
+        &:before {
+            display: block;
+            content: '';
+            background: rgba(255, 255, 255, 0.7);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    }
+`;
+
 const trialFormReducer = (state: any, action: any) => {
     switch (action.type) {
         case 'change':
@@ -249,7 +265,7 @@ const TrialForm: React.FC<Props> = ({ trialCount, goalId }) => {
     return (
         <div>
             {[...Array(trialCount)].map((e, i) => (
-                <div key={i}>
+                <RadioWrapper key={i} className={i === 0 || state.trials[i - 1] === false || state.trials[i - 1] === true ? '' : 'disabled'}>
                     <h4>{`Trial ${i + 1}`}</h4>
                     <RadioGroup role="group" aria-label={`Trial Result ${i + 1}`}>
                         <RadioLabel>
@@ -262,6 +278,8 @@ const TrialForm: React.FC<Props> = ({ trialCount, goalId }) => {
                                 name={`trial_${i}`}
                                 onChange={handleTrialRadioButtonChange}
                                 className={state.trials[i] === false ? 'active' : ''}
+                                disabled={i === 0 || state.trials[i - 1] === false || state.trials[i - 1] === true ? false : true}
+                                aria-disabled={i === 0 || state.trials[i - 1] === false || state.trials[i - 1] === true ? false : true}
                             />
                             <RadioIconNo>X</RadioIconNo>
                         </RadioLabel>
@@ -275,11 +293,13 @@ const TrialForm: React.FC<Props> = ({ trialCount, goalId }) => {
                                 name={`trial_${i}`}
                                 onChange={handleTrialRadioButtonChange}
                                 className={state.trials[i] === true ? 'active' : ''}
+                                disabled={i === 0 || state.trials[i - 1] === false || state.trials[i - 1] === true ? false : true}
+                                aria-disabled={i === 0 || state.trials[i - 1] === false || state.trials[i - 1] === true ? false : true}
                             />
                             <RadioIconYes>✓</RadioIconYes>
                         </RadioLabel>
                     </RadioGroup>
-                </div>
+                </RadioWrapper>
             ))}
         </div>
     );

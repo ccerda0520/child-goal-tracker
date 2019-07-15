@@ -5,6 +5,7 @@ export const meQuery = gql`
         me {
             email
             id
+            timeZone
         }
     }
 `;
