@@ -18,19 +18,19 @@ export const GoalListWrapper = styled('div')`
 
 const GoalList: React.FC<Props> = ({ goals }) => {
     const languageGoals = React.useMemo(() => {
-        return goals.filter((goal) => goal.category === 'language');
+        return goals.filter((goal) => goal.category === 'language').sort(sortGoalsById);
     }, [goals]);
     const selfHelpGoals = React.useMemo(() => {
-        return goals.filter((goal) => goal.category === 'self-help');
+        return goals.filter((goal) => goal.category === 'self-help').sort(sortGoalsById);
     }, [goals]);
     const ssbGoals = React.useMemo(() => {
-        return goals.filter((goal) => goal.category === 'ssb');
+        return goals.filter((goal) => goal.category === 'ssb').sort(sortGoalsById);
     }, [goals]);
     const socialSkillsGoals = React.useMemo(() => {
-        return goals.filter((goal) => goal.category === 'social-skills');
+        return goals.filter((goal) => goal.category === 'social-skills').sort(sortGoalsById);
     }, [goals]);
     const ageAppropriateGoals = React.useMemo(() => {
-        return goals.filter((goal) => goal.category === 'age-appropriate');
+        return goals.filter((goal) => goal.category === 'age-appropriate').sort(sortGoalsById);
     }, [goals]);
 
     return (
@@ -42,6 +42,10 @@ const GoalList: React.FC<Props> = ({ goals }) => {
             <GoalGroup goals={ageAppropriateGoals} title="Age Appropriate" category="age-appropriate" />
         </GoalListWrapper>
     );
+};
+
+const sortGoalsById = (a: IGoal, b: IGoal) => {
+    return parseInt(a.id) - parseInt(b.id);
 };
 
 export default GoalList;

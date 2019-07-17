@@ -8,7 +8,7 @@ import { Gear } from 'styled-icons/octicons/Gear';
 import { MeComponent } from '../generated/apolloComponents';
 import { LabelText } from './presentational/CommonStyles';
 import GlobalStyle from './presentational/GlobalStyle';
-import { fontGray } from './presentational/variables';
+import { fontGray, sidebarGray } from './presentational/variables';
 
 type Props = {
     title?: string;
@@ -60,7 +60,7 @@ const LinkWrapper = styled('a')`
     position: relative;
     display: inline-block;
     &:not(:last-of-type) {
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
     &:hover,
     &:focus {
@@ -98,7 +98,9 @@ const LinkWrapper = styled('a')`
 `;
 
 const IconLinks = styled('div')`
-    margin-top: 20px;
+    margin-top: 15px;
+    border-top: 1px solid ${sidebarGray};
+    padding-top: 15px;
 `;
 
 const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the default title' }) => (
@@ -129,20 +131,20 @@ const Layout: React.FunctionComponent<Props> = ({ children, title = 'This is the
 
                             return (
                                 <div>
-                                    <Link href="/">
+                                    <Link href="/" prefetch>
                                         <a href="/">
                                             <LabelText isLabelVisible={false}>Logo Linking to Home Page</LabelText>
                                             <LogoImg src="/static/images/logo.png" alt="Site Logo" />
                                         </a>
                                     </Link>
                                     <IconLinks>
-                                        <Link href="/">
-                                            <LinkWrapper href="/">
+                                        <Link href="/students" prefetch>
+                                            <LinkWrapper href="/students">
                                                 <StudentIcon />
                                                 <LabelText isLabelVisible={false}>Students</LabelText>
                                             </LinkWrapper>
                                         </Link>
-                                        <Link href="/settings">
+                                        <Link href="/settings" prefetch>
                                             <LinkWrapper href="/settings">
                                                 <SettingsIcon />
                                                 <LabelText isLabelVisible={false}>Settings</LabelText>

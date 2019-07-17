@@ -28,7 +28,7 @@ const settingsFormValidationSchema = Yup.object().shape({
 
 const FormWrapper = styled('div')`
     width: 450px;
-    padding: 0 25px 15px 25px;
+    padding: 5px 25px 25px 25px;
     max-width: 100%;
     button[data-reach-menu-button] {
         background: white;

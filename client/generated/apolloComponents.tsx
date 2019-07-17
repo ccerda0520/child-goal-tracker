@@ -54,6 +54,7 @@ export type Goal = {
 
 export type Mutation = {
   createGoal: Goal;
+  updateGoal?: Maybe<Scalars["Boolean"]>;
   createStudent: Student;
   createTrial: Trial;
   updateTrial: Trial;
@@ -68,6 +69,10 @@ export type Mutation = {
 
 export type MutationCreateGoalArgs = {
   data: CreateGoalInput;
+};
+
+export type MutationUpdateGoalArgs = {
+  data: UpdateGoalInput;
 };
 
 export type MutationCreateStudentArgs = {
@@ -163,6 +168,14 @@ export type Trial = {
   trialData: Array<Scalars["Boolean"]>;
   goalId: Scalars["Float"];
   goal: Goal;
+};
+
+export type UpdateGoalInput = {
+  id: Scalars["Float"];
+  name?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars["String"]>;
+  trialsPerDay?: Maybe<Scalars["Float"]>;
+  category?: Maybe<Scalars["String"]>;
 };
 
 export type UpdateTrialInput = {
@@ -329,6 +342,15 @@ export type RegisterMutation = { __typename?: "Mutation" } & {
     "id" | "firstName" | "lastName" | "email" | "timeZone"
   >;
 };
+
+export type UpdateGoalMutationVariables = {
+  data: UpdateGoalInput;
+};
+
+export type UpdateGoalMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "updateGoal"
+>;
 
 export type UpdateUserMutationVariables = {
   data: UpdateUserInput;
@@ -1184,6 +1206,68 @@ export function useRegisterMutation(
     RegisterMutation,
     RegisterMutationVariables
   >(RegisterDocument, baseOptions);
+}
+export const UpdateGoalDocument = gql`
+  mutation UpdateGoal($data: UpdateGoalInput!) {
+    updateGoal(data: $data)
+  }
+`;
+export type UpdateGoalMutationFn = ReactApollo.MutationFn<
+  UpdateGoalMutation,
+  UpdateGoalMutationVariables
+>;
+
+export const UpdateGoalComponent = (
+  props: Omit<
+    Omit<
+      ReactApollo.MutationProps<
+        UpdateGoalMutation,
+        UpdateGoalMutationVariables
+      >,
+      "mutation"
+    >,
+    "variables"
+  > & { variables?: UpdateGoalMutationVariables }
+) => (
+  <ReactApollo.Mutation<UpdateGoalMutation, UpdateGoalMutationVariables>
+    mutation={UpdateGoalDocument}
+    {...props}
+  />
+);
+
+export type UpdateGoalProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<UpdateGoalMutation, UpdateGoalMutationVariables>
+> &
+  TChildProps;
+export function withUpdateGoal<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    UpdateGoalMutation,
+    UpdateGoalMutationVariables,
+    UpdateGoalProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    UpdateGoalMutation,
+    UpdateGoalMutationVariables,
+    UpdateGoalProps<TChildProps>
+  >(UpdateGoalDocument, {
+    alias: "withUpdateGoal",
+    ...operationOptions
+  });
+}
+
+export function useUpdateGoalMutation(
+  baseOptions?: ReactApolloHooks.MutationHookOptions<
+    UpdateGoalMutation,
+    UpdateGoalMutationVariables
+  >
+) {
+  return ReactApolloHooks.useMutation<
+    UpdateGoalMutation,
+    UpdateGoalMutationVariables
+  >(UpdateGoalDocument, baseOptions);
 }
 export const UpdateUserDocument = gql`
   mutation UpdateUser($data: UpdateUserInput!) {

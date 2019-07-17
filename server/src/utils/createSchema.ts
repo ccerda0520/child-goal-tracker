@@ -2,6 +2,7 @@ import { buildSchema } from 'type-graphql';
 import { CreateGoalResolver } from '../modules/goal/createGoal';
 import { GoalsResolver } from '../modules/goal/goals';
 import { IncompleteGoalsResolver } from '../modules/goal/incompleteGoals';
+import { UpdateGoalResolver } from '../modules/goal/updateGoal';
 import { CreateStudentResolver } from '../modules/student/createStudent';
 import { CreateTrialResolver } from '../modules/trial/createTrial';
 import { CurrentTrialResolver } from '../modules/trial/currentTrial';
@@ -35,6 +36,7 @@ export const createSchema = async () => {
             CreateGoalResolver,
             GoalsResolver,
             IncompleteGoalsResolver,
+            UpdateGoalResolver,
             //Trial Resolvers
             CreateTrialResolver,
             TrialResolver,

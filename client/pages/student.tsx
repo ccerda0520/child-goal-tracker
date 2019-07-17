@@ -78,19 +78,19 @@ const StudentPage = withRouter((props) => {
         <Layout title="Student Dashboard">
             <h1>{student.firstName}'s Dashboard</h1>
             <DashboardLinkContainer>
-                <Link href={`/goals?id=${student.id}`}>
+                <Link href={`/goals?id=${student.id}`} prefetch>
                     <DashboardLink href={`/goals?id=${student.id}`}>
                         <GoalsIcon />
                         Goals
                     </DashboardLink>
                 </Link>
-                <Link href={`/session?id=${student.id}`}>
+                <Link href={`/session?id=${student.id}`} prefetch>
                     <DashboardLink href={`/session?id=${student.id}`}>
                         <SessionIcon />
                         Session
                     </DashboardLink>
                 </Link>
-                <Link href={`/databook?id=${student.id}`}>
+                <Link href={`/databook?id=${student.id}`} prefetch>
                     <DashboardLink href={`/databook?id=${student.id}`}>
                         <DatabookIcon />
                         Databook
