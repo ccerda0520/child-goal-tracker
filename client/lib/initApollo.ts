@@ -1,12 +1,8 @@
-import {
-    ApolloClient,
-    InMemoryCache,
-    NormalizedCacheObject,
-} from "apollo-boost";
-import { setContext } from "apollo-link-context";
-import { createHttpLink } from "apollo-link-http";
-import fetch from "isomorphic-unfetch";
-import { isBrowser } from "./isBrowser";
+import { ApolloClient, InMemoryCache, NormalizedCacheObject } from 'apollo-boost';
+import { setContext } from 'apollo-link-context';
+import { createHttpLink } from 'apollo-link-http';
+import fetch from 'isomorphic-unfetch';
+import { isBrowser } from './isBrowser';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 
@@ -21,8 +17,8 @@ if (!isBrowser) {
 
 function create(initialState: any, { getToken }: Options) {
     const httpLink = createHttpLink({
-        uri: "http://localhost:4000/graphql",
-        credentials: "include",
+        uri: 'https://progress-tracker-api.carlosalfredocerda.com/graphql',
+        credentials: 'include',
     });
 
     const authLink = setContext((_, { headers }) => {
@@ -30,7 +26,7 @@ function create(initialState: any, { getToken }: Options) {
         return {
             headers: {
                 ...headers,
-                cookie: token ? `qid=${token}` : "",
+                cookie: token ? `qid=${token}` : '',
             },
         };
     });

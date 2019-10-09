@@ -1,13 +1,13 @@
-import { ApolloServer } from "apollo-server-express";
-import connectRedis from "connect-redis";
-import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
-import session from "express-session";
-import "reflect-metadata";
-import { createConnection } from "typeorm";
-import { redis } from "./redis";
-import { createSchema } from "./utils/createSchema";
+import { ApolloServer } from 'apollo-server-express';
+import connectRedis from 'connect-redis';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import session from 'express-session';
+import 'reflect-metadata';
+import { createConnection } from 'typeorm';
+import { redis } from './redis';
+import { createSchema } from './utils/createSchema';
 dotenv.config();
 
 const main = async () => {
@@ -48,20 +48,20 @@ const main = async () => {
 
     const RedisStore = connectRedis(session); // connect node.req.session to redis backing store
 
-    app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+    app.use(cors({ credentials: true, origin: 'https://client.ccerda0520.now.sh' }));
 
     app.use(
         session({
             store: new RedisStore({
                 client: redis as any,
             }),
-            name: "qid",
-            secret: process.env.SESSION_SECRET || "",
+            name: 'qid',
+            secret: process.env.SESSION_SECRET || '',
             resave: false,
             saveUninitialized: false,
             cookie: {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
+                secure: process.env.NODE_ENV === 'production',
                 maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
             },
         }),
@@ -70,7 +70,7 @@ const main = async () => {
     apolloServer.applyMiddleware({ app, cors: false });
 
     app.listen(4000, () => {
-        console.log("Apollo Server on http://localhost:4000/graphql");
+        console.log('Apollo Server on http://localhost:4000/graphql');
     });
 };
 
