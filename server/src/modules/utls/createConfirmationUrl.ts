@@ -4,7 +4,7 @@ import { confirmUserPrefix } from '../constants/redisConstants';
 
 export const createConfirmationUrl = async (userId: number) => {
     const token: string = await createConfirmationToken(userId);
-    return `http://localhost:3000/confirm?token=${token}`;
+    return `https://client.ccerda0520.now.sh/confirm?token=${token}`;
 };
 
 export const createConfirmationToken = async (userId: number) => {

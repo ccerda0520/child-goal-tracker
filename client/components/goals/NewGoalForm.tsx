@@ -68,7 +68,7 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSub
                             data: {
                                 name: goalName,
                                 description: goalDescription,
-                                trialsPerDay: 5,
+                                trialsPerDay: goalTrialsPerDay,
                                 category: category,
                                 studentId: parseFloat(student.id),
                             },
@@ -87,7 +87,7 @@ const NewGoalForm: React.FunctionComponent<Props> = ({ onCancel, category, onSub
                 initialValues={{
                     goalName: '',
                     goalDescription: '',
-                    goalTrialsPerDay: '',
+                    goalTrialsPerDay: 5,
                     createGoalFailed: '',
                 }}
             >

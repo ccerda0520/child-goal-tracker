@@ -14,9 +14,9 @@ export async function sendEmail(email: string, url: string) {
     const transporter = nodemailer.createTransport(mgTransport);
 
     const mailOptions = {
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        from: '"Goal Tracker" <info@goaltracker.com>', // sender address
         to: email, // list of receivers
-        subject: 'Hello ✔', // Subject line
+        subject: 'An Email', // Subject line
         html: `<a href="${url}">${url}</a>`, // html body
     };
 
