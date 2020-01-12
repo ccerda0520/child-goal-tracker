@@ -48,7 +48,7 @@ const main = async () => {
 
     const RedisStore = connectRedis(session); // connect node.req.session to redis backing store
 
-    app.use(cors({ credentials: true, origin: 'https://client.ccerda0520.now.sh' }));
+    app.use(cors({ credentials: true, origin: 'https://tracker.carlosalfredocerda.com' }));
 
     app.use(
         session({
